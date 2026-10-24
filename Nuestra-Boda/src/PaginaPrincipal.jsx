@@ -11,7 +11,6 @@ import NuestraHistoria from "./componentes-encabezado/Galeria";
 import Vestimenta from "./componentes-encabezado/vestimenta";
 import AlbumCompartido from "./componentes-encabezado/album";
 import ImagenSeparacion from "./componentes-encabezado/imagenseparacion";
-import Musica from "./componentes-encabezado/musica";
 import Padres from "./componentes-encabezado/Padres";
 
 export default function PaginaPrincipal() {
@@ -20,10 +19,6 @@ export default function PaginaPrincipal() {
 
   return (
     <div>
-      {/* MÚSICA INDEPENDIENTE */}
-      <Musica
-        onContinuar={() => setMostrarContenido(true)}
-      />
 
       {/* PORTADA ORIGINAL */}
       <Portada mostrarContenido={mostrarContenido} />
