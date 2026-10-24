@@ -8,7 +8,6 @@ import {
   HeartHandshake,
   UserRound,
   UsersRound,
-  ChevronDown,
   MessageSquareText,
   Send,
   LoaderCircle,
@@ -18,23 +17,22 @@ import {
 // CONFIGURACIÓN - WEDLY PLUS
 // ==========================================
 
-// Google Apps Script conectado a la hoja de respuestas
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbxklU9PTlqxkcu9pBUfWYhByQZ_7kJWuFENeeQhlEW-C6eh2cVbTK3z2AbMJiWVL1ME/exec";
+// URL DE GOOGLE APPS SCRIPT
+// Si creas una implementación nueva,
+// actualiza esta URL.
 
-const COLORES = {
-  cafe: "#8F7D68",
-  champagne: "#E5CCB0",
-  marfil: "#FCFAEF",
-  texto: "#45413F",
-};
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbzh7OJ8G6G2p9AbDy5dUJp68iW3TfhUKqY8jnGyCq6tF0i8Vgp2_e4px30QafkAWQNzZg/exec";
 
 // ==========================================
 // ANIMACIONES
 // ==========================================
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 25 },
+  hidden: {
+    opacity: 0,
+    y: 25,
+  },
   show: {
     opacity: 1,
     y: 0,
@@ -63,12 +61,14 @@ function RamaBotanica({ className = "" }) {
         strokeWidth="1.2"
         strokeLinecap="round"
       />
+
       <path
         d="M91 232C58 208 38 213 13 231M109 183C76 159 57 162 32 181M134 126C103 101 88 100 66 113M159 76C184 58 207 63 230 81M102 207C144 199 163 221 179 247M126 152C163 141 184 154 197 178"
         stroke="currentColor"
         strokeWidth="1.1"
         strokeLinecap="round"
       />
+
       <path
         d="M13 231Q22 207 51 210Q42 231 13 231ZM32 181Q44 155 75 162Q62 184 32 181ZM66 113Q80 89 108 100Q96 119 66 113ZM230 81Q215 52 185 62Q198 85 230 81ZM179 247Q150 239 151 213Q175 218 179 247ZM197 178Q169 169 170 145Q192 152 197 178Z"
         fill="currentColor"
@@ -81,7 +81,7 @@ function RamaBotanica({ className = "" }) {
 }
 
 // ==========================================
-// DIVISOR
+// DIVISOR DECORATIVO
 // ==========================================
 
 function Divisor() {
@@ -102,15 +102,17 @@ export default function Confirmacion() {
   const [nombreInvitado, setNombreInvitado] = useState("");
   const [mensajeInvitado, setMensajeInvitado] = useState("");
   const [asistencia, setAsistencia] = useState("");
-  const [invitados, setInvitados] = useState(1);
+
+  // Campo manual: comienza vacío.
+  const [invitados, setInvitados] = useState("");
 
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
-  // ========================================
+  // ==========================================
   // SELECCIONAR ASISTENCIA
-  // ========================================
+  // ==========================================
 
   const seleccionarAsistencia = (opcion) => {
     setAsistencia(opcion);
@@ -118,27 +120,40 @@ export default function Confirmacion() {
     setEnviado(false);
   };
 
-  // ========================================
-  // ENVIAR A EXCEL / GOOGLE SHEETS
-  // ========================================
+  // ==========================================
+  // ENVIAR CONFIRMACIÓN
+  // ==========================================
 
   const enviarConfirmacion = async (event) => {
     event.preventDefault();
 
     if (loading) return;
 
-    if (!nombreInvitado.trim() || !asistencia) {
-      setError(
-        "Escribe tu nombre y selecciona una opción de asistencia."
-      );
+    const nombre = nombreInvitado.trim();
+
+    if (!nombre) {
+      setError("Escribe tu nombre completo.");
       return;
     }
 
+    if (!asistencia) {
+      setError("Selecciona una opción de asistencia.");
+      return;
+    }
+
+    const cantidad = Number(invitados);
+
     if (
       asistencia === "Sí asistiré" &&
-      (invitados < 1 || invitados > 6)
+      (
+        !invitados.trim() ||
+        !Number.isSafeInteger(cantidad) ||
+        cantidad < 1
+      )
     ) {
-      setError("Selecciona un número válido de invitados.");
+      setError(
+        "Escribe una cantidad válida de invitados, incluyéndote."
+      );
       return;
     }
 
@@ -146,44 +161,53 @@ export default function Confirmacion() {
     setEnviado(false);
     setLoading(true);
 
-    const data = {
-      nombre: nombreInvitado.trim(),
+    // Los nombres coinciden con Code.gs.
+    const datos = {
+      nombre,
       asistencia,
-      invitados: asistencia === "Sí asistiré" ? invitados : 0,
+      invitados:
+        asistencia === "Sí asistiré" ? cantidad : 0,
       mensaje: mensajeInvitado.trim(),
     };
 
     try {
-      // Se conserva el formato del Apps Script original.
-      // no-cors permite enviar, pero no leer la respuesta
-      // del servidor para confirmar el guardado.
       await fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
         headers: {
           "Content-Type": "text/plain;charset=utf-8",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(datos),
       });
 
+      // no-cors no permite leer la respuesta del servidor.
+      // Esto indica que se envió la solicitud,
+      // no que Google Sheets confirmó el guardado.
       setEnviado(true);
+
       setNombreInvitado("");
       setMensajeInvitado("");
       setAsistencia("");
-      setInvitados(1);
+      setInvitados("");
+
     } catch (err) {
-      console.error("Error al enviar confirmación:", err);
-      setError(
-        "No fue posible enviar tu confirmación. Inténtalo nuevamente."
+      console.error(
+        "Error al enviar confirmación:",
+        err
       );
+
+      setError(
+        "No fue posible enviar tu solicitud. Inténtalo nuevamente."
+      );
+
     } finally {
       setLoading(false);
     }
   };
 
-  // ========================================
+  // ==========================================
   // RENDER
-  // ========================================
+  // ==========================================
 
   return (
     <section
@@ -201,7 +225,9 @@ export default function Confirmacion() {
         md:py-32
       "
     >
-      {/* DECORACIONES BOTÁNICAS */}
+      {/* ======================================
+          DECORACIONES BOTÁNICAS
+      ====================================== */}
 
       <RamaBotanica
         className="
@@ -241,7 +267,14 @@ export default function Confirmacion() {
           initial="hidden"
           whileInView="show"
           viewport={{ once: true, amount: 0.2 }}
-          className="mx-auto flex max-w-2xl flex-col items-center text-center"
+          className="
+            mx-auto
+            flex
+            max-w-2xl
+            flex-col
+            items-center
+            text-center
+          "
         >
           <div
             className="
@@ -316,9 +349,18 @@ export default function Confirmacion() {
 
         <motion.form
           onSubmit={enviarConfirmacion}
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.15 }}
+          initial={{
+            opacity: 0,
+            y: 30,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.15,
+          }}
           transition={{
             duration: 0.9,
             ease: [0.22, 1, 0.36, 1],
@@ -354,7 +396,9 @@ export default function Confirmacion() {
 
           <div className="relative z-10">
 
-            {/* ENCABEZADO FORMULARIO */}
+            {/* ==================================
+                ENCABEZADO DEL FORMULARIO
+            ================================== */}
 
             <div className="mb-10 text-center">
               <Heart
@@ -411,6 +455,7 @@ export default function Confirmacion() {
                   size={18}
                   strokeWidth={1.3}
                   className="
+                    pointer-events-none
                     absolute
                     left-4
                     top-1/2
@@ -423,12 +468,14 @@ export default function Confirmacion() {
                   id="nombre-invitado"
                   type="text"
                   required
-                  maxLength={60}
+                  maxLength={150}
+                  autoComplete="name"
                   placeholder="Escribe tu nombre completo"
                   value={nombreInvitado}
                   onChange={(event) => {
                     setNombreInvitado(event.target.value);
                     setError("");
+                    setEnviado(false);
                   }}
                   className="
                     w-full
@@ -552,7 +599,9 @@ export default function Confirmacion() {
                   onClick={() =>
                     seleccionarAsistencia("No podré asistir")
                   }
-                  aria-pressed={asistencia === "No podré asistir"}
+                  aria-pressed={
+                    asistencia === "No podré asistir"
+                  }
                   className={`
                     flex
                     min-h-[76px]
@@ -616,7 +665,7 @@ export default function Confirmacion() {
             </fieldset>
 
             {/* ==================================
-                NÚMERO DE INVITADOS
+                NÚMERO DE INVITADOS MANUAL
             ================================== */}
 
             <AnimatePresence>
@@ -637,7 +686,9 @@ export default function Confirmacion() {
                     height: 0,
                     y: -10,
                   }}
-                  transition={{ duration: 0.35 }}
+                  transition={{
+                    duration: 0.35,
+                  }}
                   className="overflow-hidden"
                 >
                   <div className="pt-9">
@@ -650,7 +701,7 @@ export default function Confirmacion() {
                         text-[#766A5F]
                       "
                     >
-                      Número de invitados
+                      ¿Cuántas personas asistirán?
                     </label>
 
                     <div className="relative mt-3">
@@ -667,65 +718,61 @@ export default function Confirmacion() {
                         "
                       />
 
-                      <select
+                      <input
                         id="numero-invitados"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        required
+                        placeholder="Escribe el número de personas"
                         value={invitados}
-                        onChange={(event) =>
-                          setInvitados(
-                            Number(event.target.value)
-                          )
-                        }
+                        onChange={(event) => {
+                          // Solo permite escribir números.
+                          const valor = event.target.value
+                            .replace(/\D/g, "");
+
+                          setInvitados(valor);
+                          setError("");
+                          setEnviado(false);
+                        }}
                         className="
                           w-full
-                          appearance-none
+                          min-w-0
                           border
                           border-[#B09D87]/45
                           bg-white
                           py-4
                           pl-12
-                          pr-12
+                          pr-4
                           font-serif
                           text-lg
                           text-[#45413F]
                           outline-none
+                          transition-colors
+                          placeholder:text-[#B09D87]
                           focus:border-[#8F7D68]
-                        "
-                      >
-                        {[1, 2, 3, 4, 5, 6].map(
-                          (cantidad) => (
-                            <option
-                              key={cantidad}
-                              value={cantidad}
-                            >
-                              {cantidad}{" "}
-                              {cantidad === 1
-                                ? "persona"
-                                : "personas"}
-                            </option>
-                          )
-                        )}
-                      </select>
-
-                      <ChevronDown
-                        size={18}
-                        strokeWidth={1.3}
-                        className="
-                          pointer-events-none
-                          absolute
-                          right-4
-                          top-1/2
-                          -translate-y-1/2
-                          text-[#766A5F]
                         "
                       />
                     </div>
+
+                    <p
+                      className="
+                        mt-3
+                        text-xs
+                        leading-relaxed
+                        text-[#766A5F]
+                      "
+                    >
+                      Escribe la cantidad total de personas
+                      que asistirán, incluyéndote.
+                    </p>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* ==================================
-                MENSAJE
+                MENSAJE PARA LOS NOVIOS
             ================================== */}
 
             <div className="mt-9">
@@ -746,6 +793,7 @@ export default function Confirmacion() {
                   size={18}
                   strokeWidth={1.3}
                   className="
+                    pointer-events-none
                     absolute
                     left-4
                     top-5
@@ -758,9 +806,10 @@ export default function Confirmacion() {
                   placeholder="Escribe un mensaje especial (opcional)"
                   value={mensajeInvitado}
                   maxLength={300}
-                  onChange={(event) =>
-                    setMensajeInvitado(event.target.value)
-                  }
+                  onChange={(event) => {
+                    setMensajeInvitado(event.target.value);
+                    setEnviado(false);
+                  }}
                   rows={4}
                   className="
                     w-full
@@ -782,13 +831,20 @@ export default function Confirmacion() {
                 />
               </div>
 
-              <p className="mt-2 text-right text-xs text-[#B09D87]">
+              <p
+                className="
+                  mt-2
+                  text-right
+                  text-xs
+                  text-[#B09D87]
+                "
+              >
                 {mensajeInvitado.length}/300
               </p>
             </div>
 
             {/* ==================================
-                MENSAJES
+                MENSAJES DE ESTADO
             ================================== */}
 
             <div
@@ -799,9 +855,18 @@ export default function Confirmacion() {
                 {error && (
                   <motion.p
                     key="error"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
+                    initial={{
+                      opacity: 0,
+                      y: 8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: -8,
+                    }}
                     className="
                       flex
                       items-center
@@ -820,9 +885,18 @@ export default function Confirmacion() {
                 {enviado && (
                   <motion.p
                     key="enviado"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
+                    initial={{
+                      opacity: 0,
+                      y: 8,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: -8,
+                    }}
                     className="
                       flex
                       items-center
@@ -884,7 +958,10 @@ export default function Confirmacion() {
                 </>
               ) : (
                 <>
-                  <Send size={16} strokeWidth={1.4} />
+                  <Send
+                    size={16}
+                    strokeWidth={1.4}
+                  />
                   Enviar confirmación
                 </>
               )}

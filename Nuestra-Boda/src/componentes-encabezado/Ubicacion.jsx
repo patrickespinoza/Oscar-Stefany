@@ -438,18 +438,7 @@ export default function DireccionEvento() {
         "
       />
 
-      <RamaBotanica
-        className="
-          pointer-events-none
-          absolute
-          -bottom-16
-          -left-12
-          z-0
-          w-[190px]
-          sm:w-[250px]
-          md:w-[310px]
-        "
-      />
+      
 
       {/* ======================================
           CONTENIDO
