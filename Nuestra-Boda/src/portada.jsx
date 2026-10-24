@@ -558,7 +558,7 @@ export default function Portada({
                 object-cover
                 object-center
                 grayscale
-                blur-[4px]
+                blur-[2px]
               "
             />
 
