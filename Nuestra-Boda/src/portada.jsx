@@ -29,7 +29,7 @@ const CONFIG = {
   },
 
   // MÚSICA
-  musica: "/TylerShaw.mp3",
+  musica: "/musica.mp3",
   volumen: 0.45,
 
   // INICIALES
