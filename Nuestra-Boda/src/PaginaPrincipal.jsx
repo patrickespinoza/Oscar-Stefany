@@ -2,16 +2,15 @@
 import React, { useState } from "react";
 
 import Portada from "./portada";
-import Carousel from "./componentes-encabezado/carrusel";
 import Itinerario from "./componentes-encabezado/Itinerario";
 import Regalos from "./componentes-encabezado/Regalos";
 import Confirmacion from "./componentes-encabezado/Confirmacion";
 import DireccionEvento from "./componentes-encabezado/Ubicacion";
-import NuestraHistoria from "./componentes-encabezado/Galeria";
 import Vestimenta from "./componentes-encabezado/vestimenta";
 import AlbumCompartido from "./componentes-encabezado/album";
 import ImagenSeparacion from "./componentes-encabezado/imagenseparacion";
 import Padres from "./componentes-encabezado/Padres";
+import FraseSeparacion from "./componentes-encabezado/FraseSeparacion";
 
 export default function PaginaPrincipal() {
   const [mostrarContenido, setMostrarContenido] =
@@ -28,9 +27,9 @@ export default function PaginaPrincipal() {
       {/* RESTO DE LA INVITACIÓN */}
       <DireccionEvento />
 
-      <NuestraHistoria />
-
       <Itinerario />
+
+      <FraseSeparacion/>
 
       <Vestimenta />
 

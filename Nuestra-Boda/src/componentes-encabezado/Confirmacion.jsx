@@ -1,24 +1,40 @@
-// Confirmacion.jsx
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Check,
-  ChevronDown,
+  X,
+  Heart,
   HeartHandshake,
-  LoaderCircle,
-  MessageSquareText,
-  Send,
   UserRound,
   UsersRound,
-  X,
+  ChevronDown,
+  MessageSquareText,
+  Send,
+  LoaderCircle,
 } from "lucide-react";
 
+// ==========================================
+// CONFIGURACIÓN - WEDLY PLUS
+// ==========================================
+
+// Google Apps Script conectado a la hoja de respuestas
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbxklU9PTlqxkcu9pBUfWYhByQZ_7kJWuFENeeQhlEW-C6eh2cVbTK3z2AbMJiWVL1ME/exec";
+
+const COLORES = {
+  cafe: "#8F7D68",
+  champagne: "#E5CCB0",
+  marfil: "#FCFAEF",
+  texto: "#45413F",
+};
+
+// ==========================================
+// ANIMACIONES
+// ==========================================
+
 const fadeUp = {
-  hidden: {
-    opacity: 0,
-    y: 35,
-  },
+  hidden: { opacity: 0, y: 25 },
   show: {
     opacity: 1,
     y: 0,
@@ -29,8 +45,58 @@ const fadeUp = {
   },
 };
 
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbxklU9PTlqxkcu9pBUfWYhByQZ_7kJWuFENeeQhlEW-C6eh2cVbTK3z2AbMJiWVL1ME/exec";
+// ==========================================
+// DECORACIÓN BOTÁNICA
+// ==========================================
+
+function RamaBotanica({ className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 260 340"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="M18 335C68 290 91 236 112 175C135 111 155 56 211 10"
+        stroke="currentColor"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+      />
+      <path
+        d="M91 232C58 208 38 213 13 231M109 183C76 159 57 162 32 181M134 126C103 101 88 100 66 113M159 76C184 58 207 63 230 81M102 207C144 199 163 221 179 247M126 152C163 141 184 154 197 178"
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13 231Q22 207 51 210Q42 231 13 231ZM32 181Q44 155 75 162Q62 184 32 181ZM66 113Q80 89 108 100Q96 119 66 113ZM230 81Q215 52 185 62Q198 85 230 81ZM179 247Q150 239 151 213Q175 218 179 247ZM197 178Q169 169 170 145Q192 152 197 178Z"
+        fill="currentColor"
+        fillOpacity="0.12"
+        stroke="currentColor"
+        strokeWidth="0.8"
+      />
+    </svg>
+  );
+}
+
+// ==========================================
+// DIVISOR
+// ==========================================
+
+function Divisor() {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <span className="h-px w-12 bg-[#E5CCB0]/70 sm:w-20" />
+      <span className="h-2 w-2 rotate-45 border border-[#E5CCB0]" />
+      <span className="h-px w-12 bg-[#E5CCB0]/70 sm:w-20" />
+    </div>
+  );
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
 
 export default function Confirmacion() {
   const [nombreInvitado, setNombreInvitado] = useState("");
@@ -42,20 +108,36 @@ export default function Confirmacion() {
   const [loading, setLoading] = useState(false);
   const [enviado, setEnviado] = useState(false);
 
+  // ========================================
+  // SELECCIONAR ASISTENCIA
+  // ========================================
+
   const seleccionarAsistencia = (opcion) => {
     setAsistencia(opcion);
     setError("");
+    setEnviado(false);
   };
 
-  const enviarConfirmacion = async () => {
+  // ========================================
+  // ENVIAR A EXCEL / GOOGLE SHEETS
+  // ========================================
+
+  const enviarConfirmacion = async (event) => {
+    event.preventDefault();
+
     if (loading) return;
 
     if (!nombreInvitado.trim() || !asistencia) {
-      setError("Escribe tu nombre y selecciona una opción de asistencia.");
+      setError(
+        "Escribe tu nombre y selecciona una opción de asistencia."
+      );
       return;
     }
 
-    if (invitados < 1) {
+    if (
+      asistencia === "Sí asistiré" &&
+      (invitados < 1 || invitados > 6)
+    ) {
       setError("Selecciona un número válido de invitados.");
       return;
     }
@@ -72,11 +154,14 @@ export default function Confirmacion() {
     };
 
     try {
+      // Se conserva el formato del Apps Script original.
+      // no-cors permite enviar, pero no leer la respuesta
+      // del servidor para confirmar el guardado.
       await fetch(API_URL, {
         method: "POST",
         mode: "no-cors",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "text/plain;charset=utf-8",
         },
         body: JSON.stringify(data),
       });
@@ -86,12 +171,8 @@ export default function Confirmacion() {
       setMensajeInvitado("");
       setAsistencia("");
       setInvitados(1);
-
-      window.setTimeout(() => {
-        setEnviado(false);
-      }, 4500);
     } catch (err) {
-      console.error("Error al enviar la confirmación:", err);
+      console.error("Error al enviar confirmación:", err);
       setError(
         "No fue posible enviar tu confirmación. Inténtalo nuevamente."
       );
@@ -100,159 +181,346 @@ export default function Confirmacion() {
     }
   };
 
-  return (
-    <motion.section
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
-      className="relative isolate overflow-hidden bg-[#F8F5F0] px-5 py-24 sm:px-8 md:py-32"
-    >
-      {/* FONDO */}
-      <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(145deg,#FBF9F5_0%,#F3ECE3_50%,#E9DED1_100%)]" />
+  // ========================================
+  // RENDER
+  // ========================================
 
-      {/* TEXTURA DE PAPEL */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.35'/%3E%3C/svg%3E\")",
-        }}
+  return (
+    <section
+      id="confirmacion"
+      className="
+        relative
+        isolate
+        w-full
+        overflow-hidden
+        bg-[#8F7D68]
+        px-5
+        py-20
+        sm:px-8
+        sm:py-24
+        md:py-32
+      "
+    >
+      {/* DECORACIONES BOTÁNICAS */}
+
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -right-14
+          -top-20
+          w-[170px]
+          rotate-180
+          text-[#E5CCB0]/30
+          sm:w-[230px]
+          md:w-[290px]
+        "
       />
 
-      {/* LUCES */}
-      <div className="pointer-events-none absolute -left-40 -top-40 -z-10 h-[460px] w-[460px] rounded-full bg-white/70 blur-3xl" />
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -bottom-20
+          -left-14
+          w-[170px]
+          text-[#E5CCB0]/30
+          sm:w-[230px]
+          md:w-[290px]
+        "
+      />
 
-      <div className="pointer-events-none absolute -bottom-44 -right-32 -z-10 h-[430px] w-[430px] rounded-full bg-[#B89B5E]/10 blur-3xl" />
+      <div className="relative z-10 mx-auto max-w-5xl">
 
-      {/* BOTÁNICO */}
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-12 -left-16 h-72 w-60 text-[#9E8E7B]/15 sm:h-96 sm:w-80"
-        viewBox="0 0 250 320"
-        fill="none"
-      >
-        <path
-          d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-          stroke="currentColor"
-          strokeWidth="1.1"
-        />
+        {/* ==================================
+            ENCABEZADO
+        ================================== */}
 
-        <path
-          d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-          stroke="currentColor"
-          strokeWidth="1.1"
-        />
-      </svg>
-
-      <div className="relative z-10 mx-auto w-full max-w-6xl">
-        {/* ENCABEZADO */}
         <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.2 }}
           className="mx-auto flex max-w-2xl flex-col items-center text-center"
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9 }}
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-white/35">
+          <div
+            className="
+              flex
+              h-16
+              w-16
+              items-center
+              justify-center
+              rounded-full
+              border
+              border-[#E5CCB0]/65
+            "
+          >
             <HeartHandshake
-              size={23}
-              strokeWidth={1.25}
-              className="text-[#B89B5E]"
+              size={28}
+              strokeWidth={1.1}
+              className="text-[#E5CCB0]"
             />
           </div>
 
-          <p className="mt-6 text-[9px] uppercase tracking-[0.5em] text-[#9E8E7B] sm:text-[10px]">
+          <p
+            className="
+              mt-7
+              text-[10px]
+              uppercase
+              tracking-[0.35em]
+              text-[#E5CCB0]
+              sm:text-xs
+            "
+          >
             Nos encantará contar contigo
           </p>
 
-          <h2 className="mt-4 font-serif text-4xl font-normal text-[#433A34] sm:text-5xl md:text-6xl">
+          <h2
+            className="
+              mt-5
+              font-serif
+              text-[clamp(2.2rem,6vw,4rem)]
+              font-normal
+              leading-tight
+              text-[#FCFAEF]
+            "
+          >
             Confirma tu asistencia
           </h2>
 
-          <div className="mt-6 flex items-center gap-4">
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
-
-            <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
+          <div className="mt-7">
+            <Divisor />
           </div>
 
-          <p className="mt-6 max-w-xl font-serif text-lg italic leading-relaxed text-[#6D5E52] sm:text-xl">
-            Ayúdanos a preparar cada detalle confirmando tu asistencia.
+          <p
+            className="
+              mx-auto
+              mt-7
+              max-w-xl
+              font-serif
+              text-lg
+              italic
+              leading-relaxed
+              text-[#FCFAEF]/90
+              sm:text-xl
+            "
+          >
+            Ayúdanos a preparar cada detalle confirmando tu
+            asistencia a este día tan especial.
           </p>
         </motion.div>
 
-        {/* FORMULARIO */}
-        <motion.div
-          className="relative mx-auto mt-14 w-full max-w-3xl overflow-hidden border border-[#C7A46A]/35 bg-white/35 px-6 py-10 shadow-[0_28px_85px_rgba(67,58,52,0.1)] backdrop-blur-sm sm:px-10 sm:py-12 md:px-14"
-          initial={{ opacity: 0, y: 35, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-          viewport={{ once: true }}
+        {/* ==================================
+            FORMULARIO
+        ================================== */}
+
+        <motion.form
+          onSubmit={enviarConfirmacion}
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
           transition={{
-            duration: 1,
+            duration: 0.9,
             ease: [0.22, 1, 0.36, 1],
           }}
+          className="
+            relative
+            mx-auto
+            mt-14
+            w-full
+            max-w-3xl
+            border
+            border-[#E5CCB0]/65
+            bg-[#FCFAEF]
+            px-5
+            py-10
+            sm:px-10
+            sm:py-12
+            md:px-14
+          "
         >
           {/* MARCO INTERIOR */}
-          <div className="pointer-events-none absolute inset-3 border border-[#B89B5E]/15" />
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              inset-2
+              border
+              border-[#B09D87]/25
+              sm:inset-3
+            "
+          />
 
           <div className="relative z-10">
-            {/* NOMBRE */}
+
+            {/* ENCABEZADO FORMULARIO */}
+
+            <div className="mb-10 text-center">
+              <Heart
+                size={20}
+                strokeWidth={1.2}
+                className="mx-auto text-[#B09D87]"
+              />
+
+              <p
+                className="
+                  mt-4
+                  font-serif
+                  text-2xl
+                  italic
+                  text-[#45413F]
+                  sm:text-3xl
+                "
+              >
+                ¿Nos acompañarás?
+              </p>
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  leading-relaxed
+                  text-[#766A5F]
+                "
+              >
+                Completa los siguientes datos para registrar
+                tu respuesta.
+              </p>
+            </div>
+
+            {/* ==================================
+                NOMBRE
+            ================================== */}
+
             <div>
               <label
                 htmlFor="nombre-invitado"
-                className="text-[9px] uppercase tracking-[0.38em] text-[#8F7D68]"
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.23em]
+                  text-[#766A5F]
+                "
               >
                 Nombre y apellido
               </label>
 
               <div className="relative mt-3">
                 <UserRound
-                  size={17}
-                  strokeWidth={1.4}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-[#B89B5E]"
+                  size={18}
+                  strokeWidth={1.3}
+                  className="
+                    absolute
+                    left-4
+                    top-1/2
+                    -translate-y-1/2
+                    text-[#B09D87]
+                  "
                 />
 
                 <input
                   id="nombre-invitado"
                   type="text"
-                  placeholder="Escribe tu nombre"
-                  value={nombreInvitado}
+                  required
                   maxLength={60}
+                  placeholder="Escribe tu nombre completo"
+                  value={nombreInvitado}
                   onChange={(event) => {
                     setNombreInvitado(event.target.value);
                     setError("");
                   }}
-                  className="w-full border border-[#C7A46A]/35 bg-[#F8F5F0]/70 py-4 pl-12 pr-4 font-serif text-lg text-[#433A34] outline-none transition placeholder:text-[#A99886] focus:border-[#8F7D68]"
+                  className="
+                    w-full
+                    min-w-0
+                    border
+                    border-[#B09D87]/45
+                    bg-white
+                    py-4
+                    pl-12
+                    pr-4
+                    font-serif
+                    text-base
+                    text-[#45413F]
+                    outline-none
+                    transition-colors
+                    placeholder:text-[#B09D87]
+                    focus:border-[#8F7D68]
+                    sm:text-lg
+                  "
                 />
               </div>
             </div>
 
-            {/* ASISTENCIA */}
+            {/* ==================================
+                ASISTENCIA
+            ================================== */}
+
             <fieldset className="mt-9">
-              <legend className="text-[9px] uppercase tracking-[0.38em] text-[#8F7D68]">
+              <legend
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.23em]
+                  text-[#766A5F]
+                "
+              >
                 ¿Podrás acompañarnos?
               </legend>
 
-              <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <div
+                className="
+                  mt-4
+                  grid
+                  grid-cols-1
+                  gap-3
+                  sm:grid-cols-2
+                "
+              >
+                {/* SÍ ASISTIRÉ */}
+
                 <button
                   type="button"
-                  onClick={() => seleccionarAsistencia("Sí asistiré")}
-                  className={`flex min-h-[68px] items-center gap-4 border px-5 py-4 text-left transition duration-300 ${
-                    asistencia === "Sí asistiré"
-                      ? "border-[#8F7D68] bg-[#8F7D68] text-white"
-                      : "border-[#C7A46A]/30 bg-white/25 text-[#433A34] hover:border-[#8F7D68]/60 hover:bg-[#F3ECE3]"
-                  }`}
+                  onClick={() =>
+                    seleccionarAsistencia("Sí asistiré")
+                  }
+                  aria-pressed={asistencia === "Sí asistiré"}
+                  className={`
+                    flex
+                    min-h-[76px]
+                    items-center
+                    gap-4
+                    border
+                    px-4
+                    py-4
+                    text-left
+                    transition-colors
+                    duration-300
+                    ${
+                      asistencia === "Sí asistiré"
+                        ? "border-[#8F7D68] bg-[#8F7D68] text-white"
+                        : "border-[#B09D87]/45 bg-white text-[#45413F] hover:border-[#8F7D68]"
+                    }
+                  `}
                 >
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
-                      asistencia === "Sí asistiré"
-                        ? "border-white/40"
-                        : "border-[#C7A46A]/45"
-                    }`}
+                    className={`
+                      flex
+                      h-10
+                      w-10
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      ${
+                        asistencia === "Sí asistiré"
+                          ? "border-white/60"
+                          : "border-[#B09D87]/60"
+                      }
+                    `}
                   >
-                    <Check size={16} strokeWidth={1.6} />
+                    <Check size={18} strokeWidth={1.5} />
                   </span>
 
                   <span>
@@ -261,34 +529,66 @@ export default function Confirmacion() {
                     </span>
 
                     <span
-                      className={`mt-1 block text-xs ${
-                        asistencia === "Sí asistiré"
-                          ? "text-white/70"
-                          : "text-[#8F7D68]"
-                      }`}
+                      className={`
+                        mt-1
+                        block
+                        text-xs
+                        ${
+                          asistencia === "Sí asistiré"
+                            ? "text-white/80"
+                            : "text-[#766A5F]"
+                        }
+                      `}
                     >
                       Será un gusto acompañarlos
                     </span>
                   </span>
                 </button>
 
+                {/* NO ASISTIRÉ */}
+
                 <button
                   type="button"
-                  onClick={() => seleccionarAsistencia("No podré asistir")}
-                  className={`flex min-h-[68px] items-center gap-4 border px-5 py-4 text-left transition duration-300 ${
-                    asistencia === "No podré asistir"
-                      ? "border-[#8F7D68] bg-[#8F7D68] text-white"
-                      : "border-[#C7A46A]/30 bg-white/25 text-[#433A34] hover:border-[#8F7D68]/60 hover:bg-[#F3ECE3]"
-                  }`}
+                  onClick={() =>
+                    seleccionarAsistencia("No podré asistir")
+                  }
+                  aria-pressed={asistencia === "No podré asistir"}
+                  className={`
+                    flex
+                    min-h-[76px]
+                    items-center
+                    gap-4
+                    border
+                    px-4
+                    py-4
+                    text-left
+                    transition-colors
+                    duration-300
+                    ${
+                      asistencia === "No podré asistir"
+                        ? "border-[#8F7D68] bg-[#8F7D68] text-white"
+                        : "border-[#B09D87]/45 bg-white text-[#45413F] hover:border-[#8F7D68]"
+                    }
+                  `}
                 >
                   <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border ${
-                      asistencia === "No podré asistir"
-                        ? "border-white/40"
-                        : "border-[#C7A46A]/45"
-                    }`}
+                    className={`
+                      flex
+                      h-10
+                      w-10
+                      shrink-0
+                      items-center
+                      justify-center
+                      rounded-full
+                      border
+                      ${
+                        asistencia === "No podré asistir"
+                          ? "border-white/60"
+                          : "border-[#B09D87]/60"
+                      }
+                    `}
                   >
-                    <X size={16} strokeWidth={1.5} />
+                    <X size={18} strokeWidth={1.5} />
                   </span>
 
                   <span>
@@ -297,11 +597,16 @@ export default function Confirmacion() {
                     </span>
 
                     <span
-                      className={`mt-1 block text-xs ${
-                        asistencia === "No podré asistir"
-                          ? "text-white/70"
-                          : "text-[#8F7D68]"
-                      }`}
+                      className={`
+                        mt-1
+                        block
+                        text-xs
+                        ${
+                          asistencia === "No podré asistir"
+                            ? "text-white/80"
+                            : "text-[#766A5F]"
+                        }
+                      `}
                     >
                       Estaré presente de corazón
                     </span>
@@ -310,69 +615,142 @@ export default function Confirmacion() {
               </div>
             </fieldset>
 
-            {/* INVITADOS */}
+            {/* ==================================
+                NÚMERO DE INVITADOS
+            ================================== */}
+
             <AnimatePresence>
               {asistencia === "Sí asistiré" && (
                 <motion.div
-                  className="mt-9"
-                  initial={{ opacity: 0, height: 0, y: -10 }}
-                  animate={{ opacity: 1, height: "auto", y: 0 }}
-                  exit={{ opacity: 0, height: 0, y: -10 }}
-                  transition={{ duration: 0.4 }}
+                  initial={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                  }}
+                  animate={{
+                    opacity: 1,
+                    height: "auto",
+                    y: 0,
+                  }}
+                  exit={{
+                    opacity: 0,
+                    height: 0,
+                    y: -10,
+                  }}
+                  transition={{ duration: 0.35 }}
+                  className="overflow-hidden"
                 >
-                  <label
-                    htmlFor="numero-invitados"
-                    className="text-[9px] uppercase tracking-[0.38em] text-[#8F7D68]"
-                  >
-                    Número de invitados
-                  </label>
-
-                  <div className="relative mt-3">
-                    <UsersRound
-                      size={17}
-                      strokeWidth={1.4}
-                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#B89B5E]"
-                    />
-
-                    <select
-                      id="numero-invitados"
-                      value={invitados}
-                      onChange={(event) =>
-                        setInvitados(Number(event.target.value))
-                      }
-                      className="w-full appearance-none border border-[#C7A46A]/35 bg-[#F8F5F0]/70 py-4 pl-12 pr-12 font-serif text-lg text-[#433A34] outline-none transition focus:border-[#8F7D68]"
+                  <div className="pt-9">
+                    <label
+                      htmlFor="numero-invitados"
+                      className="
+                        text-[10px]
+                        uppercase
+                        tracking-[0.23em]
+                        text-[#766A5F]
+                      "
                     >
-                      {[1, 2, 3, 4, 5, 6].map((cantidad) => (
-                        <option key={cantidad} value={cantidad}>
-                          {cantidad} {cantidad === 1 ? "persona" : "personas"}
-                        </option>
-                      ))}
-                    </select>
+                      Número de invitados
+                    </label>
 
-                    <ChevronDown
-                      size={17}
-                      strokeWidth={1.4}
-                      className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#8F7D68]"
-                    />
+                    <div className="relative mt-3">
+                      <UsersRound
+                        size={18}
+                        strokeWidth={1.3}
+                        className="
+                          pointer-events-none
+                          absolute
+                          left-4
+                          top-1/2
+                          -translate-y-1/2
+                          text-[#B09D87]
+                        "
+                      />
+
+                      <select
+                        id="numero-invitados"
+                        value={invitados}
+                        onChange={(event) =>
+                          setInvitados(
+                            Number(event.target.value)
+                          )
+                        }
+                        className="
+                          w-full
+                          appearance-none
+                          border
+                          border-[#B09D87]/45
+                          bg-white
+                          py-4
+                          pl-12
+                          pr-12
+                          font-serif
+                          text-lg
+                          text-[#45413F]
+                          outline-none
+                          focus:border-[#8F7D68]
+                        "
+                      >
+                        {[1, 2, 3, 4, 5, 6].map(
+                          (cantidad) => (
+                            <option
+                              key={cantidad}
+                              value={cantidad}
+                            >
+                              {cantidad}{" "}
+                              {cantidad === 1
+                                ? "persona"
+                                : "personas"}
+                            </option>
+                          )
+                        )}
+                      </select>
+
+                      <ChevronDown
+                        size={18}
+                        strokeWidth={1.3}
+                        className="
+                          pointer-events-none
+                          absolute
+                          right-4
+                          top-1/2
+                          -translate-y-1/2
+                          text-[#766A5F]
+                        "
+                      />
+                    </div>
                   </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
-            {/* MENSAJE */}
+            {/* ==================================
+                MENSAJE
+            ================================== */}
+
             <div className="mt-9">
               <label
                 htmlFor="mensaje-invitado"
-                className="text-[9px] uppercase tracking-[0.38em] text-[#8F7D68]"
+                className="
+                  text-[10px]
+                  uppercase
+                  tracking-[0.23em]
+                  text-[#766A5F]
+                "
               >
                 Mensaje para los novios
               </label>
 
               <div className="relative mt-3">
                 <MessageSquareText
-                  size={17}
-                  strokeWidth={1.4}
-                  className="absolute left-4 top-5 text-[#B89B5E]"
+                  size={18}
+                  strokeWidth={1.3}
+                  className="
+                    absolute
+                    left-4
+                    top-5
+                    text-[#B09D87]
+                  "
                 />
 
                 <textarea
@@ -383,82 +761,154 @@ export default function Confirmacion() {
                   onChange={(event) =>
                     setMensajeInvitado(event.target.value)
                   }
-                  rows={5}
-                  className="w-full resize-none border border-[#C7A46A]/35 bg-[#F8F5F0]/70 py-4 pl-12 pr-4 text-sm leading-7 text-[#433A34] outline-none transition placeholder:text-[#A99886] focus:border-[#8F7D68]"
+                  rows={4}
+                  className="
+                    w-full
+                    resize-none
+                    border
+                    border-[#B09D87]/45
+                    bg-white
+                    py-4
+                    pl-12
+                    pr-4
+                    text-sm
+                    leading-7
+                    text-[#45413F]
+                    outline-none
+                    transition-colors
+                    placeholder:text-[#B09D87]
+                    focus:border-[#8F7D68]
+                  "
                 />
               </div>
 
-              <p className="mt-2 text-right text-[10px] text-[#A99886]">
+              <p className="mt-2 text-right text-xs text-[#B09D87]">
                 {mensajeInvitado.length}/300
               </p>
             </div>
 
-            {/* MENSAJES */}
-            <div className="mt-6 min-h-[28px]">
+            {/* ==================================
+                MENSAJES
+            ================================== */}
+
+            <div
+              aria-live="polite"
+              className="mt-6 min-h-[30px]"
+            >
               <AnimatePresence mode="wait">
                 {error && (
-                  <motion.div
+                  <motion.p
                     key="error"
-                    className="flex items-center justify-center gap-2 text-center text-sm text-[#9A5C4E]"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
+                    className="
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      text-center
+                      text-sm
+                      text-red-700
+                    "
                   >
-                    <X size={15} strokeWidth={1.6} />
+                    <X size={16} />
                     {error}
-                  </motion.div>
+                  </motion.p>
                 )}
 
                 {enviado && (
-                  <motion.div
-                    key="success"
-                    className="flex items-center justify-center gap-2 text-center text-sm text-[#6F7A5C]"
+                  <motion.p
+                    key="enviado"
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -8 }}
+                    className="
+                      flex
+                      items-center
+                      justify-center
+                      gap-2
+                      text-center
+                      text-sm
+                      text-[#766A5F]
+                    "
                   >
-                    <Check size={15} strokeWidth={1.7} />
-                    Confirmación enviada correctamente.
-                  </motion.div>
+                    <Check size={16} />
+                    Solicitud enviada. Gracias por responder.
+                  </motion.p>
                 )}
               </AnimatePresence>
             </div>
 
-            {/* BOTÓN */}
+            {/* ==================================
+                BOTÓN ENVIAR
+            ================================== */}
+
             <button
-              type="button"
-              onClick={enviarConfirmacion}
+              type="submit"
               disabled={loading}
-              className={`mx-auto mt-5 flex min-h-[52px] w-full max-w-sm items-center justify-center gap-3 px-7 py-3.5 text-[9px] uppercase tracking-[0.28em] text-white shadow-[0_12px_30px_rgba(109,94,82,0.16)] transition duration-300 ${
-                loading
-                  ? "cursor-not-allowed bg-[#AFA59A]"
-                  : "bg-[#8F7D68] hover:-translate-y-0.5 hover:bg-[#756453]"
-              }`}
+              className={`
+                mx-auto
+                mt-5
+                flex
+                min-h-[54px]
+                w-full
+                max-w-sm
+                items-center
+                justify-center
+                gap-3
+                border
+                border-[#8F7D68]
+                px-6
+                py-4
+                text-[10px]
+                uppercase
+                tracking-[0.2em]
+                text-white
+                transition-colors
+                duration-300
+                ${
+                  loading
+                    ? "cursor-not-allowed bg-[#B09D87]"
+                    : "bg-[#8F7D68] hover:bg-[#766A5F]"
+                }
+              `}
             >
               {loading ? (
                 <>
                   <LoaderCircle
-                    size={16}
-                    strokeWidth={1.6}
+                    size={17}
                     className="animate-spin"
                   />
-                  Enviando
+                  Enviando...
                 </>
               ) : (
                 <>
-                  <Send size={15} strokeWidth={1.5} />
+                  <Send size={16} strokeWidth={1.4} />
                   Enviar confirmación
                 </>
               )}
             </button>
 
-            <p className="mx-auto mt-7 max-w-sm text-center font-serif text-sm italic leading-6 text-[#8F7D68]">
-              Tu confirmación nos ayudará a preparar cada detalle con mucho
-              cariño.
+            <p
+              className="
+                mx-auto
+                mt-7
+                max-w-sm
+                text-center
+                font-serif
+                text-sm
+                italic
+                leading-relaxed
+                text-[#766A5F]
+              "
+            >
+              Gracias por ayudarnos a preparar este día
+              con tanto cariño.
             </p>
           </div>
-        </motion.div>
+        </motion.form>
       </div>
-    </motion.section>
+    </section>
   );
 }

@@ -8,26 +8,40 @@ import { Play, ChevronDown, AudioLines } from "lucide-react";
 // ==========================================
 
 const CONFIG = {
-  // IMAGEN PARA LA INTRODUCCIÓN
+  // IMÁGENES
   imagenIntroduccion: "/introduccion.jpg",
-
-  // IMAGEN PARA LA PORTADA PRINCIPAL
   imagenPortada: "/portada.jpg",
+
+  // POSICIONES DE LAS IMÁGENES
+  // Primer porcentaje: horizontal
+  // Segundo porcentaje: vertical
+
+  posicionIntroduccion: {
+    mobile: "50% 50%",
+    tablet: "50% 50%",
+    desktop: "50% 50%",
+  },
+
+  posicionPortada: {
+    mobile: "50% 50%",
+    tablet: "50% 50%",
+    desktop: "50% 20%",
+  },
 
   // MÚSICA
   musica: "/TylerShaw.mp3",
   volumen: 0.45,
 
-  // INICIALES DE LOS NOVIOS
+  // INICIALES
   iniciales: {
     primera: "O",
     segunda: "S",
   },
 
-  // FECHA DE LA BODA
+  // FECHA
   fecha: "02.01.2027",
 
-  // DURACIÓN DE LA APERTURA
+  // DURACIÓN DE APERTURA
   duracionApertura: 4,
 };
 
@@ -35,43 +49,63 @@ const CONFIG = {
 // MONOGRAMA O | S
 // ==========================================
 
-function Monograma({ className = "" }) {
+function Monograma({
+  className = "",
+  compacto = false,
+}) {
   return (
     <div
       className={`
-        relative mx-auto flex
-        h-[260px] w-[250px]
-        items-center justify-center
-        sm:h-[330px] sm:w-[320px]
-        md:h-[390px] md:w-[380px]
+        relative
+        mx-auto
+        shrink-0
+        ${
+          compacto
+            ? `
+              h-[180px] w-[190px]
+              sm:h-[205px] sm:w-[220px]
+              lg:h-[230px] lg:w-[250px]
+            `
+            : `
+              h-[260px] w-[250px]
+              sm:h-[330px] sm:w-[320px]
+              md:h-[390px] md:w-[380px]
+            `
+        }
         ${className}
       `}
     >
-      {/* ======================================
-          PRIMERA INICIAL - O
-      ====================================== */}
+      {/* PRIMERA INICIAL */}
 
       <span
-        className="
+        className={`
           absolute
           left-[-15%]
           top-0
           font-serif
-          text-[175px]
           font-normal
           leading-none
           tracking-[-0.08em]
           text-white
-          sm:text-[220px]
-          md:text-[260px]
-        "
+          ${
+            compacto
+              ? `
+                text-[125px]
+                sm:text-[145px]
+                lg:text-[165px]
+              `
+              : `
+                text-[175px]
+                sm:text-[220px]
+                md:text-[260px]
+              `
+          }
+        `}
       >
         {CONFIG.iniciales.primera}
       </span>
 
-      {/* ======================================
-          LÍNEA DIVISORIA
-      ====================================== */}
+      {/* LÍNEA CENTRAL */}
 
       <div
         className="
@@ -85,24 +119,32 @@ function Monograma({ className = "" }) {
         "
       />
 
-      {/* ======================================
-          SEGUNDA INICIAL - S
-      ====================================== */}
+      {/* SEGUNDA INICIAL */}
 
       <span
-        className="
+        className={`
           absolute
           bottom-[-5%]
           right-[0%]
           font-serif
-          text-[175px]
           font-normal
           leading-none
           tracking-[-0.08em]
           text-white
-          sm:text-[220px]
-          md:text-[260px]
-        "
+          ${
+            compacto
+              ? `
+                text-[125px]
+                sm:text-[145px]
+                lg:text-[165px]
+              `
+              : `
+                text-[175px]
+                sm:text-[220px]
+                md:text-[260px]
+              `
+          }
+        `}
       >
         {CONFIG.iniciales.segunda}
       </span>
@@ -111,7 +153,7 @@ function Monograma({ className = "" }) {
 }
 
 // ==========================================
-// PORTADA PRINCIPAL
+// COMPONENTE PORTADA
 // ==========================================
 
 export default function Portada({
@@ -124,7 +166,41 @@ export default function Portada({
   const [reproduciendo, setReproduciendo] = useState(false);
 
   // ==========================================
-  // INICIAR EXPERIENCIA
+  // POSICIONES RESPONSIVAS
+  // ==========================================
+
+  const estilosPosicion = `
+    .imagen-introduccion {
+      object-position: ${CONFIG.posicionIntroduccion.mobile};
+    }
+
+    .imagen-portada {
+      object-position: ${CONFIG.posicionPortada.mobile};
+    }
+
+    @media (min-width: 640px) {
+      .imagen-introduccion {
+        object-position: ${CONFIG.posicionIntroduccion.tablet};
+      }
+
+      .imagen-portada {
+        object-position: ${CONFIG.posicionPortada.tablet};
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .imagen-introduccion {
+        object-position: ${CONFIG.posicionIntroduccion.desktop};
+      }
+
+      .imagen-portada {
+        object-position: ${CONFIG.posicionPortada.desktop};
+      }
+    }
+  `;
+
+  // ==========================================
+  // ENTRAR A LA INVITACIÓN
   // ==========================================
 
   const entrarInvitacion = () => {
@@ -138,8 +214,6 @@ export default function Portada({
       audio.volume = CONFIG.volumen;
       audio.muted = false;
 
-      // Iniciar desde el clic para permitir
-      // la reproducción en navegadores móviles.
       audio
         .play()
         .then(() => {
@@ -154,7 +228,6 @@ export default function Portada({
         });
     }
 
-    // Iniciar la revelación sin esperar al audio
     setAbierta(true);
   };
 
@@ -170,9 +243,7 @@ export default function Portada({
     if (audio.paused) {
       try {
         audio.muted = false;
-
         await audio.play();
-
         setReproduciendo(true);
       } catch (error) {
         console.warn(
@@ -188,7 +259,7 @@ export default function Portada({
   };
 
   // ==========================================
-  // BLOQUEAR SCROLL DURANTE LA INTRODUCCIÓN
+  // BLOQUEAR SCROLL EN INTRODUCCIÓN
   // ==========================================
 
   useEffect(() => {
@@ -204,7 +275,7 @@ export default function Portada({
   }, [abierta]);
 
   // ==========================================
-  // BAJAR A LA SIGUIENTE SECCIÓN
+  // IR A LA SIGUIENTE SECCIÓN
   // ==========================================
 
   const bajarContenido = () => {
@@ -216,9 +287,11 @@ export default function Portada({
 
   return (
     <>
-      {/* ======================================
-          AUDIO GLOBAL
-      ====================================== */}
+      {/* POSICIONES DE IMÁGENES */}
+
+      <style>{estilosPosicion}</style>
+
+      {/* AUDIO GLOBAL */}
 
       <audio
         ref={audioRef}
@@ -230,7 +303,7 @@ export default function Portada({
       />
 
       {/* ======================================
-          PORTADA PRINCIPAL REVELADA
+          PORTADA PRINCIPAL
       ====================================== */}
 
       <section
@@ -245,21 +318,18 @@ export default function Portada({
           text-white
         "
       >
-        {/* ======================================
-            IMAGEN DE PORTADA PRINCIPAL
-            FOTOGRAFÍA NÍTIDA
-        ====================================== */}
+        {/* FOTOGRAFÍA PRINCIPAL */}
 
         <motion.img
           src={CONFIG.imagenPortada}
           alt="Fotografía de los novios"
           className="
+            imagen-portada
             absolute
             inset-0
             h-full
             w-full
             object-cover
-            object-center
           "
           initial={{
             scale: 1.08,
@@ -273,17 +343,11 @@ export default function Portada({
           }}
         />
 
-        {/* OSCURECIMIENTO GENERAL */}
+        {/* OSCURECIMIENTO */}
 
-        <div
-          className="
-            absolute
-            inset-0
-            bg-black/30
-          "
-        />
+        <div className="absolute inset-0 bg-black/30" />
 
-        {/* DEGRADADO INFERIOR */}
+        {/* DEGRADADO ORIGINAL */}
 
         <div
           className="
@@ -297,7 +361,7 @@ export default function Portada({
         />
 
         {/* ======================================
-            BOTÓN MUSICAL BEIGE
+            BOTÓN DE MÚSICA
         ====================================== */}
 
         <AnimatePresence>
@@ -383,77 +447,89 @@ export default function Portada({
         </AnimatePresence>
 
         {/* ======================================
-            FECHA DE LA BODA
+            FECHA + MONOGRAMA
+            SIN SUPERPOSICIÓN
         ====================================== */}
 
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 35,
-          }}
-          animate={{
-            opacity: abierta ? 1 : 0,
-            y: abierta ? 0 : 35,
-          }}
-          transition={{
-            delay: 1.8,
-            duration: 1.3,
-          }}
+        <div
           className="
             absolute
             inset-x-0
-            top-[53%]
-            z-10
-            text-center
-          "
-        >
-          <p
-            className="
-              font-cursiveDancing
-              text-[clamp(3.3rem,12vw,6.5rem)]
-              font-normal
-              leading-none
-              text-white
-              drop-shadow-[0_3px_15px_rgba(0,0,0,0.6)]
-            "
-          >
-            {CONFIG.fecha}
-          </p>
-        </motion.div>
-
-        {/* ======================================
-            INICIALES DE LA PORTADA
-        ====================================== */}
-
-        <motion.div
-          initial={{
-            opacity: 0,
-            y: 45,
-          }}
-          animate={{
-            opacity: abierta ? 1 : 0,
-            y: abierta ? 0 : 45,
-          }}
-          transition={{
-            delay: 2.3,
-            duration: 1.3,
-          }}
-          className="
-            absolute
-            inset-x-0
-            bottom-[5%]
+            bottom-[8%]
             z-10
             flex
-            justify-center
+            flex-col
+            items-center
+            justify-end
+            gap-4
+            px-4
+            sm:bottom-[8%]
+            sm:gap-5
+            lg:bottom-[9%]
+            lg:gap-6
           "
         >
-          <Monograma
+          {/* FECHA */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 35,
+            }}
+            animate={{
+              opacity: abierta ? 1 : 0,
+              y: abierta ? 0 : 35,
+            }}
+            transition={{
+              delay: 1.8,
+              duration: 1.3,
+            }}
             className="
-              scale-[0.72]
-              sm:scale-90
+              relative
+              w-full
+              text-center
             "
-          />
-        </motion.div>
+          >
+            <p
+              className="
+                font-cursiveDancing
+                text-[clamp(2.8rem,9vw,5rem)]
+                font-normal
+                leading-[1.2]
+                text-white
+                drop-shadow-[0_3px_15px_rgba(0,0,0,0.6)]
+                lg:text-[5.5rem]
+              "
+            >
+              {CONFIG.fecha}
+            </p>
+          </motion.div>
+
+          {/* MONOGRAMA */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 45,
+            }}
+            animate={{
+              opacity: abierta ? 1 : 0,
+              y: abierta ? 0 : 45,
+            }}
+            transition={{
+              delay: 2.3,
+              duration: 1.3,
+            }}
+            className="
+              relative
+              flex
+              w-full
+              justify-center
+            "
+          >
+            <Monograma compacto />
+          </motion.div>
+        </div>
 
         {/* ======================================
             BOTÓN PARA CONTINUAR
@@ -504,8 +580,7 @@ export default function Portada({
       </section>
 
       {/* ======================================
-          PANTALLA DE INTRODUCCIÓN
-          DESLIZAMIENTO HACIA ARRIBA
+          INTRODUCCIÓN
       ====================================== */}
 
       <AnimatePresence>
@@ -540,39 +615,30 @@ export default function Portada({
               text-white
             "
           >
-            {/* ======================================
-                IMAGEN DE INTRODUCCIÓN
-                DESENFOCADA Y BLANCO Y NEGRO
-            ====================================== */}
+            {/* IMAGEN DE INTRODUCCIÓN */}
 
             <img
               src={CONFIG.imagenIntroduccion}
               alt=""
               aria-hidden="true"
               className="
+                imagen-introduccion
                 absolute
                 inset-0
                 h-full
                 w-full
                 scale-110
                 object-cover
-                object-center
                 grayscale
                 blur-[2px]
               "
             />
 
-            {/* OSCURECIMIENTO DE INTRODUCCIÓN */}
+            {/* OSCURECIMIENTO */}
 
-            <div
-              className="
-                absolute
-                inset-0
-                bg-black/40
-              "
-            />
+            <div className="absolute inset-0 bg-black/40" />
 
-            {/* DEGRADADO DE INTRODUCCIÓN */}
+            {/* DEGRADADO ORIGINAL */}
 
             <div
               className="
@@ -585,9 +651,7 @@ export default function Portada({
               "
             />
 
-            {/* ======================================
-                CONTENIDO DE INTRODUCCIÓN
-            ====================================== */}
+            {/* CONTENIDO */}
 
             <motion.div
               initial={{
@@ -614,9 +678,7 @@ export default function Portada({
                 text-center
               "
             >
-              {/* ======================================
-                  TÍTULO NUESTRA BODA
-              ====================================== */}
+              {/* TÍTULO */}
 
               <h1
                 className="
@@ -633,15 +695,11 @@ export default function Portada({
                 Nuestra Boda
               </h1>
 
-              {/* ======================================
-                  INICIALES DE INTRODUCCIÓN
-              ====================================== */}
+              {/* MONOGRAMA ORIGINAL */}
 
               <Monograma />
 
-              {/* ======================================
-                  BOTÓN ENTRAR
-              ====================================== */}
+              {/* BOTÓN ENTRAR */}
 
               <motion.button
                 type="button"
@@ -676,8 +734,6 @@ export default function Portada({
                   sm:mt-16
                 "
               >
-                {/* SEGUNDO BORDE */}
-
                 <span
                   className="
                     pointer-events-none

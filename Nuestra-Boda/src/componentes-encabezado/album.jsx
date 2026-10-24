@@ -1,226 +1,649 @@
-// AlbumCompartido.jsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Images, ArrowUpRight, X } from "lucide-react";
+import {
+  Images,
+  ArrowUpRight,
+  X,
+  Copy,
+  Check,
+  Heart,
+} from "lucide-react";
+
+// ==========================================
+// INFORMACIÓN EDITABLE - WEDLY PLUS
+// ==========================================
+
+const CONFIG = {
+  imagen: "/albun.png",
+  qr: "/qr.png",
+
+  aplicacion: "Wedshoots",
+
+  codigoAlbum: "MXat19tb26",
+
+  enlaceApp:
+    "https://apps.apple.com/mx/app/wedshoots/id660256196",
+
+  titulo: "Álbum compartido",
+
+  frase:
+    "Cada fotografía será parte de los recuerdos que guardaremos de este día.",
+};
+
+// ==========================================
+// ANIMACIONES
+// ==========================================
 
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 35,
+    y: 25,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.9,
       ease: [0.22, 1, 0.36, 1],
     },
   },
 };
 
+// ==========================================
+// DECORACIÓN BOTÁNICA
+// ==========================================
+
+function RamaBotanica({ className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 260 340"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="
+          M18 335
+          C68 290 91 236 112 175
+          C135 111 155 56 211 10
+        "
+        stroke="#B09D87"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="
+          M91 232 C58 208 38 213 13 231
+          M109 183 C76 159 57 162 32 181
+          M134 126 C103 101 88 100 66 113
+          M159 76 C184 58 207 63 230 81
+          M102 207 C144 199 163 221 179 247
+          M126 152 C163 141 184 154 197 178
+        "
+        stroke="#B09D87"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+
+      <g
+        fill="#E5CCB0"
+        stroke="#B09D87"
+        strokeWidth="0.8"
+      >
+        <path d="M13 231 Q22 207 51 210 Q42 231 13 231Z" />
+        <path d="M32 181 Q44 155 75 162 Q62 184 32 181Z" />
+        <path d="M66 113 Q80 89 108 100 Q96 119 66 113Z" />
+        <path d="M230 81 Q215 52 185 62 Q198 85 230 81Z" />
+        <path d="M179 247 Q150 239 151 213 Q175 218 179 247Z" />
+        <path d="M197 178 Q169 169 170 145 Q192 152 197 178Z" />
+        <path d="M211 10 Q182 17 180 44 Q201 37 211 10Z" />
+      </g>
+    </svg>
+  );
+}
+
+// ==========================================
+// FLOR DECORATIVA
+// ==========================================
+
+function FlorDecorativa() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 80 65"
+      fill="none"
+      className="h-12 w-14 text-[#B09D87]"
+    >
+      <path
+        d="M40 60 C39 42 40 29 40 12"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="
+          M40 42 C29 30 20 32 14 39
+          M40 34 C51 23 61 25 67 31
+        "
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="M14 39 Q17 27 31 31 Q27 41 14 39Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="M67 31 Q60 18 48 26 Q53 34 67 31Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="
+          M40 12
+          C27 3 24 19 40 26
+          C56 19 53 3 40 12Z
+        "
+        fill="#FCFAEF"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
+
+// ==========================================
+// DIVISOR
+// ==========================================
+
+function DivisorElegante() {
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+
+      <span
+        className="
+          h-[5px]
+          w-[5px]
+          rotate-45
+          bg-[#B09D87]
+        "
+      />
+
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+    </div>
+  );
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
+
 export default function AlbumCompartido() {
   const [open, setOpen] = useState(false);
+  const [copiado, setCopiado] = useState(false);
+
+  // ========================================
+  // BLOQUEAR SCROLL Y CERRAR CON ESC
+  // ========================================
+
+  useEffect(() => {
+    if (!open) return;
+
+    const scrollAnterior = document.body.style.overflow;
+
+    document.body.style.overflow = "hidden";
+
+    const cerrarConEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", cerrarConEscape);
+
+    return () => {
+      document.body.style.overflow = scrollAnterior;
+      window.removeEventListener("keydown", cerrarConEscape);
+    };
+  }, [open]);
+
+  // ========================================
+  // COPIAR CÓDIGO
+  // ========================================
+
+  const copiarCodigo = async () => {
+    try {
+      await navigator.clipboard.writeText(
+        CONFIG.codigoAlbum
+      );
+
+      setCopiado(true);
+    } catch (error) {
+      console.error(
+        "No se pudo copiar el código:",
+        error
+      );
+    }
+  };
+
+  const cerrarModal = () => {
+    setOpen(false);
+    setCopiado(false);
+  };
 
   return (
     <>
-      {/* SECCIÓN ÁLBUM COMPARTIDO */}
-      <motion.section
-        variants={fadeUp}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.25 }}
-        className="relative isolate overflow-hidden bg-[#F8F5F0] px-5 py-24 sm:px-8 md:py-32"
+      {/* ======================================
+          SECCIÓN ÁLBUM
+      ====================================== */}
+
+      <section
+        id="album"
+        className="
+          relative
+          isolate
+          w-full
+          overflow-hidden
+          bg-[#FCFAEF]
+          px-5
+          py-20
+          sm:px-8
+          sm:py-24
+          md:py-28
+        "
       >
-        {/* FONDO */}
-        <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(145deg,#FBF9F5_0%,#F3ECE3_50%,#E9DED1_100%)]" />
+        {/* DECORACIONES BOTÁNICAS */}
 
-        {/* LUCES SUAVES */}
-        <div className="pointer-events-none absolute -left-40 -top-40 -z-10 h-[460px] w-[460px] rounded-full bg-white/70 blur-3xl" />
-
-        <div className="pointer-events-none absolute -bottom-40 -right-32 -z-10 h-[430px] w-[430px] rounded-full bg-[#B89B5E]/10 blur-3xl" />
-
-        {/* TEXTURA DE PAPEL */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] mix-blend-multiply"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.35'/%3E%3C/svg%3E\")",
-          }}
+        <RamaBotanica
+          className="
+            pointer-events-none
+            absolute
+            -right-14
+            -top-20
+            z-0
+            w-[150px]
+            rotate-180
+            opacity-40
+            sm:w-[210px]
+            md:w-[260px]
+          "
         />
 
-        {/* BOTÁNICO IZQUIERDO */}
-        <svg
-          aria-hidden="true"
-          className="pointer-events-none absolute -bottom-12 -left-16 h-72 w-60 text-[#9E8E7B]/15 sm:h-96 sm:w-80"
-          viewBox="0 0 250 320"
-          fill="none"
-        >
-          <path
-            d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-            stroke="currentColor"
-            strokeWidth="1.1"
-          />
+        <RamaBotanica
+          className="
+            pointer-events-none
+            absolute
+            -bottom-20
+            -left-14
+            z-0
+            w-[180px]
+            opacity-40
+            sm:w-[240px]
+            md:w-[300px]
+          "
+        />
 
-          <path
-            d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-            stroke="currentColor"
-            strokeWidth="1.1"
-          />
-        </svg>
+        <div className="relative z-10 mx-auto max-w-5xl">
+          {/* ======================================
+              ENCABEZADO
+          ====================================== */}
 
-        <div className="relative z-10 mx-auto w-full max-w-6xl">
-          {/* ENCABEZADO */}
           <motion.div
-            className="mx-auto mb-14 flex max-w-2xl flex-col items-center text-center"
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9 }}
+            variants={fadeUp}
+            initial="hidden"
+            whileInView="show"
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            className="
+              flex
+              flex-col
+              items-center
+              text-center
+            "
           >
-            <p className="text-[9px] uppercase tracking-[0.5em] text-[#9E8E7B] sm:text-[10px]">
+            <FlorDecorativa />
+
+            <p
+              className="
+                mt-5
+                text-[10px]
+                uppercase
+                tracking-[0.32em]
+                text-[#B09D87]
+                sm:text-xs
+              "
+            >
               Comparte tus recuerdos
             </p>
 
-            <h2 className="mt-4 font-serif text-4xl font-normal text-[#433A34] sm:text-5xl md:text-6xl">
-              Álbum compartido
+            <h2
+              className="
+                mt-4
+                font-serif
+                text-[clamp(2rem,6vw,3.5rem)]
+                font-normal
+                uppercase
+                leading-tight
+                tracking-[0.06em]
+                text-[#45413F]
+              "
+            >
+              {CONFIG.titulo}
             </h2>
 
-            <div className="mt-6 flex items-center justify-center gap-4">
-              <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
-
-              <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-
-              <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
+            <div className="mt-6">
+              <DivisorElegante />
             </div>
 
-            <p className="mt-6 max-w-xl font-serif text-lg italic leading-relaxed text-[#6D5E52] sm:text-xl">
-              Cada fotografía será parte de los recuerdos que guardaremos de
-              este día.
+            <p
+              className="
+                mx-auto
+                mt-7
+                max-w-xl
+                font-serif
+                text-[17px]
+                italic
+                leading-relaxed
+                text-[#766A5F]
+                sm:text-xl
+              "
+            >
+              {CONFIG.frase}
             </p>
           </motion.div>
 
-          {/* CONTENIDO */}
+          {/* ======================================
+              IMAGEN + INVITACIÓN
+          ====================================== */}
+
           <motion.div
-            className="relative mx-auto grid w-full max-w-5xl grid-cols-1 overflow-hidden border border-[#C7A46A]/30 bg-white/30 shadow-[0_28px_80px_rgba(67,58,52,0.1)] backdrop-blur-sm md:grid-cols-[1.2fr_0.8fr]"
-            initial={{ opacity: 0, y: 35, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
+            initial={{
+              opacity: 0,
+              y: 25,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.15,
+            }}
             transition={{
-              duration: 1,
+              duration: 0.9,
               ease: [0.22, 1, 0.36, 1],
             }}
+            className="
+              mx-auto
+              mt-14
+              grid
+              w-full
+              max-w-4xl
+              grid-cols-1
+              overflow-hidden
+              border
+              border-[#B09D87]/45
+              bg-[#FCFAEF]
+              md:mt-16
+              md:grid-cols-2
+            "
           >
-            {/* MARCO INTERIOR */}
-            <div className="pointer-events-none absolute inset-3 z-20 border border-[#B89B5E]/15" />
-
             {/* IMAGEN */}
-            <motion.div
-              className="relative min-h-[420px] overflow-hidden border-b border-[#C7A46A]/25 bg-[#F5EFE7] md:min-h-[620px] md:border-b-0 md:border-r"
-              initial={{ opacity: 0, x: -25 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.9,
-                delay: 0.15,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+
+            <div
+              className="
+                relative
+                h-[340px]
+                overflow-hidden
+                border-b
+                border-[#B09D87]/40
+                bg-[#E5CCB0]
+                sm:h-[440px]
+                md:h-[550px]
+                md:border-b-0
+                md:border-r
+              "
             >
               <img
-                src="/albun.png"
-                alt="Fotografías del álbum compartido"
-                className="absolute inset-0 h-full w-full object-cover object-center"
+                src={CONFIG.imagen}
+                alt="Recuerdos de nuestra boda"
+                loading="lazy"
+                className="
+                  h-full
+                  w-full
+                  object-cover
+                  object-center
+                "
               />
+            </div>
 
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#433A34]/15 via-transparent to-white/5" />
+            {/* INFORMACIÓN */}
 
-              {/* ETIQUETA SOBRE LA IMAGEN */}
-              <div className="absolute bottom-7 left-7 right-7 border border-white/35 bg-white/15 px-5 py-4 text-center text-white shadow-lg backdrop-blur-md sm:bottom-10 sm:left-10 sm:right-10">
-                <p className="text-[9px] uppercase tracking-[0.35em]">
-                  Un día para recordar
-                </p>
-              </div>
-            </motion.div>
-
-            {/* TEXTO */}
-            <motion.div
-              className="relative flex min-h-[420px] flex-col items-center justify-center px-8 py-16 text-center sm:px-12 md:min-h-[620px]"
-              initial={{ opacity: 0, x: 25 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.9,
-                delay: 0.25,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+            <div
+              className="
+                flex
+                flex-col
+                items-center
+                justify-center
+                px-7
+                py-12
+                text-center
+                sm:px-10
+                md:px-12
+              "
             >
-              <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-[#F8F5F0]">
+              <div
+                className="
+                  flex
+                  h-14
+                  w-14
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#B09D87]
+                  text-[#B09D87]
+                "
+              >
                 <Images
-                  size={22}
-                  strokeWidth={1.3}
-                  className="text-[#B89B5E]"
+                  size={23}
+                  strokeWidth={1.2}
                 />
               </div>
 
-              <p className="mt-7 text-[9px] uppercase tracking-[0.4em] text-[#9E8E7B]">
+              <p
+                className="
+                  mt-7
+                  text-[10px]
+                  uppercase
+                  tracking-[0.3em]
+                  text-[#B09D87]
+                "
+              >
                 Nuestros recuerdos
               </p>
 
-              <h3 className="mt-4 font-serif text-4xl font-normal text-[#433A34] sm:text-5xl">
+              <h3
+                className="
+                  mt-4
+                  font-serif
+                  text-[clamp(2rem,5vw,3rem)]
+                  font-normal
+                  leading-tight
+                  text-[#45413F]
+                "
+              >
                 Comparte tus fotos
               </h3>
 
-              <div className="mt-7 flex items-center gap-3">
-                <span className="h-px w-10 bg-[#C7A46A]/55" />
-
-                <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-
-                <span className="h-px w-10 bg-[#C7A46A]/55" />
+              <div className="mt-7">
+                <DivisorElegante />
               </div>
 
-              <p className="mt-7 max-w-sm text-sm leading-7 text-[#6D5E52] sm:text-base">
-                Captura cada instante especial y súbelo a nuestro álbum para
-                revivir esta celebración junto a nosotros.
+              <p
+                className="
+                  mt-7
+                  max-w-sm
+                  text-sm
+                  leading-7
+                  text-[#766A5F]
+                  sm:text-base
+                "
+              >
+                Captura cada instante especial y
+                súbelo a nuestro álbum para
+                revivir esta celebración juntos.
               </p>
+
+              {/* BOTÓN */}
 
               <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="group mt-10 inline-flex items-center justify-center gap-3 border border-[#8F7D68] bg-[#8F7D68] px-8 py-3.5 text-[10px] uppercase tracking-[0.28em] text-white shadow-[0_12px_30px_rgba(109,94,82,0.16)] transition duration-300 hover:-translate-y-1 hover:bg-[#756453]"
+                className="
+                  group
+                  mt-9
+                  inline-flex
+                  min-h-12
+                  items-center
+                  justify-center
+                  gap-3
+                  border
+                  border-[#8F7D68]
+                  bg-[#8F7D68]
+                  px-7
+                  py-3.5
+                  text-[10px]
+                  uppercase
+                  tracking-[0.2em]
+                  text-white
+                  transition-colors
+                  duration-300
+                  hover:bg-[#766A5F]
+                  focus-visible:outline
+                  focus-visible:outline-2
+                  focus-visible:outline-offset-4
+                  focus-visible:outline-[#B09D87]
+                "
               >
                 Abrir álbum
 
                 <ArrowUpRight
-                  size={15}
+                  size={16}
                   strokeWidth={1.5}
-                  className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                  className="
+                    transition-transform
+                    duration-300
+                    group-hover:translate-x-0.5
+                    group-hover:-translate-y-0.5
+                  "
                 />
               </button>
-            </motion.div>
+            </div>
+          </motion.div>
+
+          {/* CIERRE */}
+
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: 20,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.9 }}
+            className="
+              mx-auto
+              mt-12
+              flex
+              flex-col
+              items-center
+              text-center
+            "
+          >
+            <DivisorElegante />
+
+            <p
+              className="
+                mt-6
+                font-serif
+                text-lg
+                italic
+                text-[#766A5F]
+              "
+            >
+              Los mejores recuerdos son los
+              que compartimos.
+            </p>
+
+            <Heart
+              size={14}
+              fill="#B09D87"
+              strokeWidth={1}
+              className="mt-5 text-[#B09D87]"
+            />
           </motion.div>
         </div>
-      </motion.section>
+      </section>
 
-      {/* MODAL DEL ÁLBUM */}
+      {/* ======================================
+          MODAL DEL ÁLBUM
+      ====================================== */}
+
       <AnimatePresence>
         {open && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#433A34]/55 px-4 py-8 backdrop-blur-md"
+            className="
+              fixed
+              inset-0
+              z-[100]
+              flex
+              items-center
+              justify-center
+              overflow-y-auto
+              bg-[#45413F]/75
+              px-4
+              py-6
+              sm:py-8
+            "
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-            onClick={() => setOpen(false)}
+            transition={{ duration: 0.25 }}
+            onClick={cerrarModal}
           >
+            {/* VENTANA */}
+
             <motion.div
               role="dialog"
               aria-modal="true"
               aria-labelledby="album-modal-title"
-              className="relative my-auto w-full max-w-md overflow-hidden border border-[#C7A46A]/40 bg-[#F9F6F0] shadow-[0_35px_100px_rgba(0,0,0,0.3)]"
+              className="
+                relative
+                my-auto
+                w-full
+                max-w-md
+                border
+                border-[#B09D87]
+                bg-[#FCFAEF]
+              "
               initial={{
                 opacity: 0,
-                y: 35,
-                scale: 0.96,
+                y: 25,
+                scale: 0.98,
               }}
               animate={{
                 opacity: 1,
@@ -229,113 +652,322 @@ export default function AlbumCompartido() {
               }}
               exit={{
                 opacity: 0,
-                y: 20,
-                scale: 0.96,
+                y: 15,
+                scale: 0.98,
               }}
               transition={{
-                duration: 0.5,
+                duration: 0.4,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              onClick={(event) => event.stopPropagation()}
+              onClick={(event) =>
+                event.stopPropagation()
+              }
             >
-              {/* FONDO DEL MODAL */}
-              <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,#FBF9F5_0%,#F3ECE3_100%)]" />
+              {/* MARCO INTERIOR */}
 
-              {/* TEXTURA */}
               <div
-                className="pointer-events-none absolute inset-0 opacity-[0.04] mix-blend-multiply"
-                style={{
-                  backgroundImage:
-                    "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.35'/%3E%3C/svg%3E\")",
-                }}
+                className="
+                  pointer-events-none
+                  absolute
+                  inset-3
+                  border
+                  border-[#B09D87]/30
+                "
               />
 
-              {/* MARCO INTERIOR */}
-              <div className="pointer-events-none absolute inset-3 z-10 border border-[#B89B5E]/18" />
+              {/* CERRAR */}
 
-              {/* BOTÓN CERRAR */}
               <button
                 type="button"
-                onClick={() => setOpen(false)}
+                onClick={cerrarModal}
                 aria-label="Cerrar álbum compartido"
-                className="absolute right-5 top-5 z-30 flex h-9 w-9 items-center justify-center rounded-full border border-[#C7A46A]/30 bg-[#F8F5F0]/80 text-[#8F7D68] backdrop-blur-sm transition hover:border-[#8F7D68] hover:bg-[#8F7D68] hover:text-white"
+                className="
+                  absolute
+                  right-5
+                  top-5
+                  z-30
+                  flex
+                  h-9
+                  w-9
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#B09D87]/50
+                  bg-[#FCFAEF]
+                  text-[#766A5F]
+                  transition-colors
+                  hover:bg-[#B09D87]
+                  hover:text-white
+                "
               >
-                <X size={17} strokeWidth={1.5} />
+                <X
+                  size={17}
+                  strokeWidth={1.5}
+                />
               </button>
 
-              {/* CONTENIDO DEL MODAL */}
-              <div className="relative z-20 max-h-[88vh] overflow-y-auto px-7 py-10 text-center sm:px-9">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-[#F8F5F0]">
+              {/* CONTENIDO */}
+
+              <div
+                className="
+                  relative
+                  z-10
+                  max-h-[88dvh]
+                  overflow-y-auto
+                  px-6
+                  py-10
+                  text-center
+                  sm:px-9
+                "
+              >
+                <div
+                  className="
+                    mx-auto
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[#B09D87]
+                    text-[#B09D87]
+                  "
+                >
                   <Images
-                    size={21}
-                    strokeWidth={1.3}
-                    className="text-[#B89B5E]"
+                    size={22}
+                    strokeWidth={1.2}
                   />
                 </div>
 
-                <p className="mt-6 text-[9px] uppercase tracking-[0.45em] text-[#9E8E7B]">
+                <p
+                  className="
+                    mt-6
+                    text-[10px]
+                    uppercase
+                    tracking-[0.3em]
+                    text-[#B09D87]
+                  "
+                >
                   Comparte tus recuerdos
                 </p>
 
                 <h2
                   id="album-modal-title"
-                  className="mt-4 font-serif text-4xl font-normal text-[#433A34]"
+                  className="
+                    mt-4
+                    font-serif
+                    text-3xl
+                    text-[#45413F]
+                    sm:text-4xl
+                  "
                 >
                   Álbum compartido
                 </h2>
 
-                <div className="mt-6 flex items-center justify-center gap-4">
-                  <span className="h-px w-10 bg-[#C7A46A]/60" />
-
-                  <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-
-                  <span className="h-px w-10 bg-[#C7A46A]/60" />
+                <div className="mt-6">
+                  <DivisorElegante />
                 </div>
 
                 {/* APLICACIÓN */}
-                <div className="mt-9">
-                  <p className="text-[9px] uppercase tracking-[0.38em] text-[#9E8E7B]">
+
+                <div className="mt-8">
+                  <p
+                    className="
+                      text-[10px]
+                      uppercase
+                      tracking-[0.25em]
+                      text-[#B09D87]
+                    "
+                  >
                     Aplicación
                   </p>
 
-                  <p className="mt-3 font-serif text-2xl text-[#433A34]">
-                    Wedshoots
+                  <p
+                    className="
+                      mt-3
+                      font-serif
+                      text-2xl
+                      text-[#45413F]
+                    "
+                  >
+                    {CONFIG.aplicacion}
                   </p>
 
                   <a
-                    href="https://apps.apple.com/mx/app/wedshoots/id660256196"
+                    href={CONFIG.enlaceApp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="mt-6 inline-flex items-center justify-center border border-[#8F7D68] bg-[#8F7D68] px-7 py-3 text-[9px] uppercase tracking-[0.25em] text-white transition duration-300 hover:-translate-y-0.5 hover:bg-[#756453]"
+                    className="
+                      mt-5
+                      inline-flex
+                      min-h-11
+                      items-center
+                      justify-center
+                      gap-2
+                      border
+                      border-[#8F7D68]
+                      bg-[#8F7D68]
+                      px-6
+                      py-3
+                      text-[10px]
+                      uppercase
+                      tracking-[0.18em]
+                      text-white
+                      transition-colors
+                      hover:bg-[#766A5F]
+                    "
                   >
                     Descargar app
+
+                    <ArrowUpRight
+                      size={15}
+                      strokeWidth={1.4}
+                    />
                   </a>
                 </div>
 
                 {/* CÓDIGO */}
+
                 <div className="mt-9">
-                  <p className="text-[9px] uppercase tracking-[0.38em] text-[#9E8E7B]">
+                  <p
+                    className="
+                      text-[10px]
+                      uppercase
+                      tracking-[0.25em]
+                      text-[#B09D87]
+                    "
+                  >
                     Código del álbum
                   </p>
 
-                  <div className="mt-4 border border-[#C7A46A]/30 bg-white/45 px-4 py-4 font-mono text-xl tracking-[0.24em] text-[#433A34] shadow-inner sm:text-2xl sm:tracking-[0.32em]">
-                    MXat19tb26
+                  <div
+                    className="
+                      mt-4
+                      flex
+                      items-center
+                      justify-center
+                      gap-3
+                      border
+                      border-[#B09D87]/50
+                      bg-[#F4E9DA]
+                      px-3
+                      py-3
+                    "
+                  >
+                    <span
+                      className="
+                        break-all
+                        font-mono
+                        text-base
+                        tracking-[0.12em]
+                        text-[#45413F]
+                        sm:text-xl
+                      "
+                    >
+                      {CONFIG.codigoAlbum}
+                    </span>
+
+                    <button
+                      type="button"
+                      onClick={copiarCodigo}
+                      aria-label={
+                        copiado
+                          ? "Código copiado"
+                          : "Copiar código del álbum"
+                      }
+                      className="
+                        flex
+                        h-9
+                        w-9
+                        shrink-0
+                        items-center
+                        justify-center
+                        border
+                        border-[#B09D87]/50
+                        text-[#766A5F]
+                        transition-colors
+                        hover:bg-[#B09D87]
+                        hover:text-white
+                      "
+                    >
+                      {copiado ? (
+                        <Check size={17} />
+                      ) : (
+                        <Copy size={17} />
+                      )}
+                    </button>
                   </div>
+
+                  {copiado && (
+                    <p
+                      role="status"
+                      className="
+                        mt-2
+                        text-xs
+                        text-[#766A5F]
+                      "
+                    >
+                      Código copiado
+                    </p>
+                  )}
                 </div>
 
-                {/* QR */}
-                <div className="mt-9 flex justify-center">
-                  <div className="border border-[#C7A46A]/25 bg-white p-3 shadow-[0_16px_40px_rgba(67,58,52,0.12)]">
+                {/* CÓDIGO QR */}
+
+                <div className="mt-9">
+                  <p
+                    className="
+                      text-[10px]
+                      uppercase
+                      tracking-[0.25em]
+                      text-[#B09D87]
+                    "
+                  >
+                    Escanea el código QR
+                  </p>
+
+                  <div
+                    className="
+                      mx-auto
+                      mt-5
+                      w-fit
+                      border
+                      border-[#B09D87]/40
+                      bg-white
+                      p-3
+                    "
+                  >
                     <img
-                      src="/qr.png"
+                      src={CONFIG.qr}
                       alt="Código QR del álbum compartido"
-                      className="h-40 w-40 object-contain sm:h-44 sm:w-44"
+                      loading="lazy"
+                      className="
+                        h-40
+                        w-40
+                        object-contain
+                        sm:h-44
+                        sm:w-44
+                      "
                     />
                   </div>
                 </div>
 
-                <p className="mx-auto mt-7 max-w-xs font-serif text-base italic leading-7 text-[#6D5E52]">
-                  Escanea el código QR o utiliza la aplicación para compartir
+                <p
+                  className="
+                    mx-auto
+                    mt-7
+                    max-w-xs
+                    font-serif
+                    text-base
+                    italic
+                    leading-7
+                    text-[#766A5F]
+                  "
+                >
+                  Escanea el código QR o utiliza
+                  la aplicación para compartir
                   tus fotografías con nosotros.
                 </p>
               </div>

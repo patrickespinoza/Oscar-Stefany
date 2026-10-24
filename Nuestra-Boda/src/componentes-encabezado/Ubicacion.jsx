@@ -1,246 +1,734 @@
-// DireccionEvento.jsx
 
 import React from "react";
 import { motion } from "framer-motion";
-import { CalendarDays, Clock3, MapPin, ArrowUpRight } from "lucide-react";
+import {
+  Church,
+  Wine,
+  MapPin,
+  Clock3,
+  ArrowUpRight,
+  CalendarDays,
+} from "lucide-react";
+
+// ==========================================
+// INFORMACIÓN EDITABLE - WEDLY PLUS
+// ==========================================
+
+const CONFIG = {
+  fecha: {
+    diaSemana: "Sábado",
+    dia: "02",
+    mes: "Enero",
+    anio: "2027",
+  },
+
+  eventos: [
+    {
+      id: "ceremonia",
+      subtitulo: "Ceremonia religiosa",
+      nombre: "Parroquia María Reina de la Paz",
+      hora: "1:00",
+      periodo: "P. M.",
+      ubicacion:
+        "https://maps.app.goo.gl/9m5vT7wgSgkwRHkZ7",
+      tipo: "iglesia",
+    },
+    {
+      id: "recepcion",
+      subtitulo: "Recepción",
+      nombre: "Casa Antualian",
+      hora: "3:00",
+      periodo: "P. M.",
+      ubicacion:
+        "https://maps.app.goo.gl/BiE8EDCxETKVn9UB6",
+      tipo: "recepcion",
+    },
+  ],
+};
+
+// ==========================================
+// ANIMACIONES
+// ==========================================
 
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 35,
+    y: 28,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.9,
       ease: [0.22, 1, 0.36, 1],
     },
   },
 };
 
-export default function DireccionEvento() {
+// ==========================================
+// DECORACIÓN BOTÁNICA
+// ==========================================
+
+function RamaBotanica({ className = "" }) {
   return (
-    <motion.section
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.25 }}
-      className="relative isolate flex min-h-[720px] w-full items-center justify-center overflow-hidden bg-[#F8F5F0] px-5 py-24 sm:px-8 md:py-32"
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 260 340"
+      fill="none"
+      className={className}
     >
-      {/* FONDO */}
-      <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(145deg,#FBF9F5_0%,#F3EDE4_50%,#E9DED1_100%)]" />
-
-      {/* LUCES */}
-      <div className="pointer-events-none absolute -left-32 -top-32 -z-10 h-[420px] w-[420px] rounded-full bg-white/70 blur-3xl" />
-
-      <div className="pointer-events-none absolute -bottom-40 -right-32 -z-10 h-[430px] w-[430px] rounded-full bg-[#B89B5E]/10 blur-3xl" />
-
-      {/* TEXTURA DE PAPEL */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.35'/%3E%3C/svg%3E\")",
-        }}
+      <path
+        d="
+          M18 335
+          C68 290 91 236 112 175
+          C135 111 155 56 211 10
+        "
+        stroke="#B09D87"
+        strokeWidth="1.3"
+        strokeLinecap="round"
       />
 
-      {/* DECORACIÓN BOTÁNICA */}
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-12 bottom-0 h-64 w-52 text-[#A99886]/20 sm:h-80 sm:w-64"
-        viewBox="0 0 250 320"
-        fill="none"
-      >
-        <path
-          d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
+      <path
+        d="
+          M91 232 C58 208 38 213 13 231
+          M109 183 C76 159 57 162 32 181
+          M134 126 C103 101 88 100 66 113
+          M159 76 C184 58 207 63 230 81
+          M102 207 C144 199 163 221 179 247
+          M126 152 C163 141 184 154 197 178
+        "
+        stroke="#B09D87"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
 
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-12 top-0 h-64 w-52 rotate-180 text-[#A99886]/15 sm:h-80 sm:w-64"
-        viewBox="0 0 250 320"
-        fill="none"
+      <g
+        fill="#E5CCB0"
+        stroke="#B09D87"
+        strokeWidth="0.8"
       >
-        <path
-          d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
+        <path d="M13 231 Q22 207 51 210 Q42 231 13 231Z" />
+        <path d="M32 181 Q44 155 75 162 Q62 184 32 181Z" />
+        <path d="M66 113 Q80 89 108 100 Q96 119 66 113Z" />
+        <path d="M230 81 Q215 52 185 62 Q198 85 230 81Z" />
+        <path d="M179 247 Q150 239 151 213 Q175 218 179 247Z" />
+        <path d="M197 178 Q169 169 170 145 Q192 152 197 178Z" />
+        <path d="M211 10 Q182 17 180 44 Q201 37 211 10Z" />
+      </g>
 
-      {/* TARJETA PRINCIPAL */}
-      <motion.div
-        className="relative w-full max-w-4xl border border-[#C7A46A]/35 bg-white/35 px-6 py-12 text-center shadow-[0_30px_90px_rgba(67,58,52,0.1)] backdrop-blur-sm sm:px-10 md:px-16 md:py-16"
-        initial={{ opacity: 0, y: 35, scale: 0.98 }}
-        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{
-          duration: 1,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+      <g
+        fill="#FCFAEF"
+        stroke="#B09D87"
+        strokeWidth="0.9"
       >
-        {/* MARCO INTERIOR */}
-        <div className="pointer-events-none absolute inset-3 border border-[#B89B5E]/15 sm:inset-4" />
+        <ellipse cx="103" cy="89" rx="6" ry="10" />
+        <ellipse cx="103" cy="109" rx="6" ry="10" />
+        <ellipse cx="93" cy="99" rx="10" ry="6" />
+        <ellipse cx="113" cy="99" rx="10" ry="6" />
 
-        {/* ENCABEZADO */}
-        <motion.div
-          className="relative z-10 flex flex-col items-center"
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.15 }}
+        <circle
+          cx="103"
+          cy="99"
+          r="4"
+          fill="#B09D87"
+        />
+      </g>
+    </svg>
+  );
+}
+
+// ==========================================
+// FLOR CENTRAL
+// ==========================================
+
+function FlorCentral() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 80 65"
+      fill="none"
+      className="h-12 w-14 text-[#B09D87]"
+    >
+      <path
+        d="M40 60 C39 42 40 29 40 12"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="
+          M40 42 C29 30 20 32 14 39
+          M40 34 C51 23 61 25 67 31
+        "
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="M14 39 Q17 27 31 31 Q27 41 14 39Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="M67 31 Q60 18 48 26 Q53 34 67 31Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="
+          M40 12
+          C27 3 24 19 40 26
+          C56 19 53 3 40 12Z
+        "
+        fill="#FCFAEF"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
+
+// ==========================================
+// DIVISOR EDITORIAL
+// ==========================================
+
+function DivisorElegante() {
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+
+      <span
+        className="
+          h-[5px]
+          w-[5px]
+          rotate-45
+          bg-[#B09D87]
+        "
+      />
+
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+    </div>
+  );
+}
+
+// ==========================================
+// BLOQUE DE UBICACIÓN
+// ==========================================
+
+function BloqueEvento({ evento, index }) {
+  const Icono =
+    evento.tipo === "iglesia" ? Church : Wine;
+
+  return (
+    <motion.article
+      initial={{
+        opacity: 0,
+        y: 28,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.2,
+      }}
+      transition={{
+        duration: 0.9,
+        delay: index * 0.15,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="
+        flex
+        h-full
+        flex-col
+        items-center
+        px-3
+        text-center
+        sm:px-8
+        md:px-10
+      "
+    >
+      {/* ÍCONO */}
+
+      <div
+        className="
+          flex
+          h-14
+          w-14
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-[#B09D87]
+          text-[#B09D87]
+        "
+      >
+        <Icono size={25} strokeWidth={1.2} />
+      </div>
+
+      {/* TIPO DE EVENTO */}
+
+      <p
+        className="
+          mt-7
+          text-[10px]
+          uppercase
+          tracking-[0.3em]
+          text-[#B09D87]
+          sm:text-xs
+        "
+      >
+        {evento.subtitulo}
+      </p>
+
+      {/* NOMBRE DEL LUGAR */}
+
+      <h3
+        className="
+          mt-5
+          max-w-sm
+          font-serif
+          text-[clamp(1.5rem,4vw,2.1rem)]
+          font-normal
+          leading-snug
+          text-[#45413F]
+        "
+      >
+        {evento.nombre}
+      </h3>
+
+      {/* LÍNEA DECORATIVA */}
+
+      <span
+        className="
+          mt-7
+          h-px
+          w-14
+          bg-[#B09D87]
+        "
+      />
+
+      {/* HORA */}
+
+      <div className="mt-7 flex items-center gap-3">
+        <Clock3
+          size={17}
+          strokeWidth={1.3}
+          className="text-[#B09D87]"
+        />
+
+        <p
+          className="
+            font-serif
+            text-2xl
+            text-[#45413F]
+            sm:text-3xl
+          "
         >
-          <p className="text-[9px] uppercase tracking-[0.5em] text-[#9E8E7B] sm:text-[10px]">
+          {evento.hora}
+          <span
+            className="
+              ml-2
+              font-sans
+              text-[10px]
+              tracking-[0.2em]
+              text-[#766A5F]
+            "
+          >
+            {evento.periodo}
+          </span>
+        </p>
+      </div>
+  
+
+      {/* BOTÓN GOOGLE MAPS */}
+
+      <a
+        href={evento.ubicacion}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`Ver ubicación de ${evento.nombre} en Google Maps`}
+        className="
+          group
+          mt-8
+          inline-flex
+          min-h-12
+          items-center
+          justify-center
+          gap-3
+          border
+          border-[#B09D87]
+          bg-[#B09D87]
+          px-7
+          py-3.5
+          text-[10px]
+          font-medium
+          uppercase
+          tracking-[0.17em]
+          text-white
+          transition-colors
+          duration-300
+          hover:bg-[#8F7D68]
+          focus-visible:outline
+          focus-visible:outline-2
+          focus-visible:outline-offset-4
+          focus-visible:outline-[#B09D87]
+        "
+      >
+        <MapPin size={15} strokeWidth={1.5} />
+
+        Ver ubicación
+
+        <ArrowUpRight
+          size={15}
+          strokeWidth={1.5}
+          className="
+            transition-transform
+            duration-300
+            group-hover:translate-x-0.5
+            group-hover:-translate-y-0.5
+          "
+        />
+      </a>
+    </motion.article>
+  );
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
+
+export default function DireccionEvento() {
+  return (
+    <section
+      id="ubicacion"
+      className="
+        relative
+        isolate
+        w-full
+        overflow-hidden
+        bg-[#FCFAEF]
+        px-5
+        py-20
+        sm:px-8
+        sm:py-24
+        md:py-28
+      "
+    >
+      {/* ======================================
+          DECORACIONES BOTÁNICAS
+      ====================================== */}
+
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -right-14
+          -top-20
+          z-0
+          w-[150px]
+          rotate-180
+          sm:w-[210px]
+          md:w-[260px]
+        "
+      />
+
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -bottom-16
+          -left-12
+          z-0
+          w-[190px]
+          sm:w-[250px]
+          md:w-[310px]
+        "
+      />
+
+      {/* ======================================
+          CONTENIDO
+      ====================================== */}
+
+      <div className="relative z-10 mx-auto max-w-5xl">
+        {/* ======================================
+            ENCABEZADO
+        ====================================== */}
+
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
+          className="
+            flex
+            flex-col
+            items-center
+            text-center
+          "
+        >
+          <FlorCentral />
+
+          <p
+            className="
+              mt-5
+              text-[10px]
+              uppercase
+              tracking-[0.35em]
+              text-[#B09D87]
+              sm:text-xs
+            "
+          >
             Nuestro gran día
           </p>
 
-          <h2 className="mt-4 font-serif text-4xl font-normal text-[#433A34] sm:text-5xl md:text-6xl">
-            ¿Cuándo?
+          <h2
+            className="
+              mt-4
+              font-serif
+              text-[clamp(2rem,6vw,3.5rem)]
+              font-normal
+              uppercase
+              leading-tight
+              tracking-[0.08em]
+              text-[#45413F]
+            "
+          >
+            Celebración
           </h2>
 
-          <div className="mt-6 flex items-center gap-4">
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
-            <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
+          <div className="mt-6">
+            <DivisorElegante />
           </div>
+
+          <p
+            className="
+              mx-auto
+              mt-7
+              max-w-xl
+              font-serif
+              text-[17px]
+              italic
+              leading-relaxed
+              text-[#766A5F]
+              sm:text-xl
+            "
+          >
+            Hay momentos que se vuelven inolvidables
+            cuando se comparten con las personas
+            que más queremos.
+          </p>
         </motion.div>
 
-        {/* INFORMACIÓN */}
-        <div className="relative z-10 mt-12 grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-0">
-          {/* FECHA */}
-          <motion.div
-            className="flex flex-col items-center px-5 md:border-r md:border-[#C7A46A]/25"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.25 }}
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-[#F8F5F0]">
-              <CalendarDays
-                size={20}
-                strokeWidth={1.4}
-                className="text-[#B89B5E]"
-              />
-            </div>
+        {/* ======================================
+            FECHA DEL EVENTO
+        ====================================== */}
 
-            <p className="mt-5 text-[9px] uppercase tracking-[0.35em] text-[#9E8E7B]">
-              Fecha
-            </p>
-
-            <p className="mt-3 font-serif text-xl text-[#433A34] sm:text-2xl">
-              Domingo
-            </p>
-
-            <p className="mt-1 text-sm uppercase tracking-[0.18em] text-[#6D5E52]">
-              11 de junio
-            </p>
-          </motion.div>
-
-          {/* AÑO */}
-          <motion.div
-            className="flex flex-col items-center px-5 md:border-r md:border-[#C7A46A]/25"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.35 }}
-          >
-            <p className="text-[9px] uppercase tracking-[0.35em] text-[#9E8E7B]">
-              Año
-            </p>
-
-            <p className="mt-3 font-serif text-6xl font-normal leading-none tracking-[-0.05em] text-[#433A34] sm:text-7xl">
-              2027
-            </p>
-
-            <span className="mt-5 h-px w-16 bg-gradient-to-r from-transparent via-[#C7A46A] to-transparent" />
-          </motion.div>
-
-          {/* HORA */}
-          <motion.div
-            className="flex flex-col items-center px-5"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.45 }}
-          >
-            <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-[#F8F5F0]">
-              <Clock3
-                size={20}
-                strokeWidth={1.4}
-                className="text-[#B89B5E]"
-              />
-            </div>
-
-            <p className="mt-5 text-[9px] uppercase tracking-[0.35em] text-[#9E8E7B]">
-              Hora
-            </p>
-
-            <p className="mt-3 font-serif text-2xl text-[#433A34] sm:text-3xl">
-              4:30
-            </p>
-
-            <p className="mt-1 text-xs uppercase tracking-[0.3em] text-[#6D5E52]">
-              p. m.
-            </p>
-          </motion.div>
-        </div>
-
-        {/* UBICACIÓN */}
         <motion.div
-          className="relative z-10 mt-12 border-t border-[#C7A46A]/25 pt-9"
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{
+            opacity: 0,
+            y: 25,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8, delay: 0.55 }}
+          transition={{
+            duration: 0.9,
+          }}
+          className="
+            mx-auto
+            mt-14
+            flex
+            max-w-lg
+            flex-col
+            items-center
+            text-center
+            sm:mt-16
+          "
         >
-          <MapPin
-            size={20}
-            strokeWidth={1.4}
-            className="mx-auto text-[#B89B5E]"
+          <CalendarDays
+            size={22}
+            strokeWidth={1.2}
+            className="text-[#B09D87]"
           />
 
-          <p className="mt-4 text-[9px] uppercase tracking-[0.4em] text-[#9E8E7B]">
-            Ubicación
-          </p>
-
-          <p className="mt-3 font-serif text-xl text-[#433A34] sm:text-2xl">
-            Lugar de la celebración
-          </p>
-
-          <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#6D5E52]">
-            Consulta la ubicación y obtén indicaciones para llegar.
-          </p>
-
-          <a
-            href="https://maps.app.goo.gl/TsSDUBKAractwi8F8"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group mx-auto mt-7 inline-flex items-center justify-center gap-3 border border-[#8F7D68] bg-[#8F7D68] px-7 py-3.5 text-[9px] uppercase tracking-[0.28em] text-white shadow-[0_10px_30px_rgba(109,94,82,0.15)] transition duration-300 hover:-translate-y-1 hover:bg-[#756453]"
+          <p
+            className="
+              mt-5
+              text-[10px]
+              uppercase
+              tracking-[0.3em]
+              text-[#B09D87]
+            "
           >
-            Ver ubicación
+            {CONFIG.fecha.diaSemana}
+          </p>
 
-            <ArrowUpRight
-              size={15}
-              strokeWidth={1.5}
-              className="transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-            />
-          </a>
+          <div
+            className="
+              mt-3
+              flex
+              items-center
+              justify-center
+              gap-5
+              sm:gap-7
+            "
+          >
+            <span className="h-px w-10 bg-[#B09D87] sm:w-16" />
+
+            <span
+              className="
+                font-serif
+                text-6xl
+                leading-none
+                text-[#45413F]
+                sm:text-7xl
+              "
+            >
+              {CONFIG.fecha.dia}
+            </span>
+
+            <span className="h-px w-10 bg-[#B09D87] sm:w-16" />
+          </div>
+
+          <p
+            className="
+              mt-3
+              font-serif
+              text-2xl
+              text-[#45413F]
+              sm:text-3xl
+            "
+          >
+            {CONFIG.fecha.mes}
+          </p>
+
+          <p
+            className="
+              mt-2
+              text-xs
+              tracking-[0.4em]
+              text-[#B09D87]
+            "
+          >
+            {CONFIG.fecha.anio}
+          </p>
         </motion.div>
-      </motion.div>
-    </motion.section>
+
+        {/* ======================================
+            DIVISOR ENTRE FECHA Y LUGARES
+        ====================================== */}
+
+        <div className="mx-auto mt-14 max-w-4xl border-t border-[#B09D87]/40 sm:mt-16" />
+
+        {/* ======================================
+            CEREMONIA Y RECEPCIÓN
+        ====================================== */}
+
+        <div
+          className="
+            relative
+            mx-auto
+            mt-14
+            grid
+            max-w-5xl
+            grid-cols-1
+            gap-12
+            md:grid-cols-2
+            md:gap-0
+          "
+        >
+          {/* LÍNEA CENTRAL EN COMPUTADORA */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-3
+              left-1/2
+              top-3
+              hidden
+              w-px
+              -translate-x-1/2
+              bg-[#B09D87]/45
+              md:block
+            "
+          />
+
+          {CONFIG.eventos.map((evento, index) => (
+            <React.Fragment key={evento.id}>
+              <BloqueEvento
+                evento={evento}
+                index={index}
+              />
+
+              {index === 0 && (
+                <div
+                  className="
+                    mx-auto
+                    h-px
+                    w-36
+                    bg-[#B09D87]/40
+                    md:hidden
+                  "
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* ======================================
+            FRASE FINAL
+        ====================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{ once: true }}
+          transition={{
+            duration: 0.9,
+          }}
+          className="
+            mx-auto
+            mt-20
+            max-w-2xl
+            text-center
+          "
+        >
+          <DivisorElegante />
+
+          <p
+            className="
+              mt-7
+              font-serif
+              text-lg
+              italic
+              leading-relaxed
+              text-[#766A5F]
+              sm:text-xl
+            "
+          >
+            Será un honor compartir
+            este día tan especial contigo.
+          </p>
+        </motion.div>
+      </div>
+    </section>
   );
 }

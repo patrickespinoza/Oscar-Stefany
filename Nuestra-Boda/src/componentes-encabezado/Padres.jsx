@@ -3,206 +3,651 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 
+// ==========================================
+// INFORMACIÓN EDITABLE - WEDLY PLUS
+// ==========================================
+
+const padres = [
+  {
+    titulo: "Padres de la novia",
+    nombres: [
+      "David Sánchez Priego",
+      "Rosario Cortés Sánchez",
+    ],
+  },
+  {
+    titulo: "Familia del novio",
+    nombres: [
+      "Nieves León León †",
+      "Guadalupe Ramirez León",
+    ],
+    fallecido: [0],
+  },
+];
+
+const padrinos = [
+  {
+    titulo: "Padrinos de velación",
+    nombres: [
+      "Salvador Ramírez León",
+      "Areli Romero Flores",
+    ],
+  },
+  {
+    titulo: "Padrinos de anillos",
+    nombres: [
+      "Carlos Valencia Galicia",
+      "Concepción Sánchez Priego",
+    ],
+  },
+];
+
+// ==========================================
+// ANIMACIONES
+// ==========================================
+
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 35,
+    y: 25,
   },
   show: {
     opacity: 1,
     y: 0,
     transition: {
-      duration: 1,
+      duration: 0.9,
       ease: [0.22, 1, 0.36, 1],
     },
   },
 };
 
-const padres = [
-  {
-    titulo: "Padres de la novia",
-    nombres: ["Alejandro Mendoza", "Patricia Salazar"],
-  },
-  {
-    titulo: "Padres del novio",
-    nombres: ["Fernando Castillo", "Gabriela Navarro"],
-  },
-];
+// ==========================================
+// RAMA BOTÁNICA DECORATIVA
+// ==========================================
+
+function RamaBotanica({ className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 260 340"
+      fill="none"
+      className={className}
+    >
+      {/* TALLO PRINCIPAL */}
+
+      <path
+        d="
+          M18 335
+          C68 290 91 236 112 175
+          C135 111 155 56 211 10
+        "
+        stroke="#B09D87"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+
+      {/* RAMAS SECUNDARIAS */}
+
+      <path
+        d="
+          M91 232 C58 208 38 213 13 231
+          M109 183 C76 159 57 162 32 181
+          M134 126 C103 101 88 100 66 113
+          M159 76 C184 58 207 63 230 81
+          M102 207 C144 199 163 221 179 247
+          M126 152 C163 141 184 154 197 178
+        "
+        stroke="#B09D87"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+
+      {/* HOJAS */}
+
+      <g
+        fill="#E5CCB0"
+        stroke="#B09D87"
+        strokeWidth="0.8"
+      >
+        <path d="M13 231 Q22 207 51 210 Q42 231 13 231Z" />
+        <path d="M32 181 Q44 155 75 162 Q62 184 32 181Z" />
+        <path d="M66 113 Q80 89 108 100 Q96 119 66 113Z" />
+        <path d="M230 81 Q215 52 185 62 Q198 85 230 81Z" />
+        <path d="M179 247 Q150 239 151 213 Q175 218 179 247Z" />
+        <path d="M197 178 Q169 169 170 145 Q192 152 197 178Z" />
+        <path d="M211 10 Q182 17 180 44 Q201 37 211 10Z" />
+      </g>
+
+      {/* FLOR */}
+
+      <g
+        fill="#FCFAEF"
+        stroke="#B09D87"
+        strokeWidth="0.9"
+      >
+        <ellipse cx="103" cy="89" rx="6" ry="10" />
+        <ellipse cx="103" cy="109" rx="6" ry="10" />
+        <ellipse cx="93" cy="99" rx="10" ry="6" />
+        <ellipse cx="113" cy="99" rx="10" ry="6" />
+        <circle
+          cx="103"
+          cy="99"
+          r="4"
+          fill="#B09D87"
+        />
+      </g>
+    </svg>
+  );
+}
+
+// ==========================================
+// FLOR DECORATIVA CENTRAL
+// ==========================================
+
+function FlorCentral() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 80 65"
+      fill="none"
+      className="h-12 w-14 text-[#B09D87]"
+    >
+      <path
+        d="M40 60 C39 42 40 29 40 12"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="
+          M40 42 C29 30 20 32 14 39
+          M40 34 C51 23 61 25 67 31
+        "
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+
+      <path
+        d="M14 39 Q17 27 31 31 Q27 41 14 39Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="M67 31 Q60 18 48 26 Q53 34 67 31Z"
+        fill="#E5CCB0"
+        stroke="currentColor"
+        strokeWidth="1"
+      />
+
+      <path
+        d="
+          M40 12
+          C27 3 24 19 40 26
+          C56 19 53 3 40 12Z
+        "
+        fill="#FCFAEF"
+        stroke="currentColor"
+        strokeWidth="1.2"
+      />
+    </svg>
+  );
+}
+
+// ==========================================
+// DIVISOR ELEGANTE
+// ==========================================
+
+function DivisorElegante() {
+  return (
+    <div className="flex items-center justify-center gap-3">
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+
+      <span
+        className="
+          h-[5px]
+          w-[5px]
+          rotate-45
+          bg-[#B09D87]
+        "
+      />
+
+      <span className="h-px w-10 bg-[#B09D87] sm:w-14" />
+    </div>
+  );
+}
+
+// ==========================================
+// BLOQUE DE NOMBRES
+// ==========================================
+
+function BloqueFamilia({ grupo, index }) {
+  return (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 25,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      viewport={{
+        once: true,
+        amount: 0.25,
+      }}
+      transition={{
+        duration: 0.9,
+        delay: index * 0.15,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      className="
+        relative
+        flex
+        flex-col
+        items-center
+        px-3
+        text-center
+        sm:px-8
+        md:px-10
+      "
+    >
+      {/* TÍTULO */}
+
+      <p
+        className="
+          mb-7
+          text-[10px]
+          font-medium
+          uppercase
+          tracking-[0.22em]
+          text-[#B09D87]
+          sm:text-xs
+        "
+      >
+        {grupo.titulo}
+      </p>
+
+      {/* NOMBRES */}
+
+      <div className="space-y-3">
+        {grupo.nombres.map((nombre, i) => (
+          <React.Fragment key={`${nombre}-${i}`}>
+            <h3
+              className="
+                font-serif
+                text-[clamp(1.35rem,4vw,2rem)]
+                font-normal
+                leading-snug
+                text-[#45413F]
+              "
+            >
+              {nombre}
+
+            </h3>
+
+            {i === 0 && (
+              <p
+                className="
+                  font-serif
+                  text-lg
+                  italic
+                  text-[#B09D87]
+                "
+              >
+                y
+              </p>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+
+      {/* LÍNEA DECORATIVA */}
+
+      <div className="mt-8 h-px w-14 bg-[#B09D87]" />
+    </motion.div>
+  );
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
 
 export default function Padres() {
   return (
-    <motion.section
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.15 }}
-      className="relative isolate w-full overflow-hidden bg-[#F8F5F0] px-5 py-24 sm:px-8 md:py-32"
+    <section
+      id="padres"
+      className="
+        relative
+        isolate
+        w-full
+        overflow-hidden
+        bg-[#FCFAEF]
+        px-5
+        py-20
+        sm:px-8
+        sm:py-24
+        md:py-28
+      "
     >
-      {/* FONDO DEGRADADO */}
-      <div className="pointer-events-none absolute inset-0 -z-20 bg-[linear-gradient(145deg,#FBF9F5_0%,#F3EDE4_55%,#E9DED1_100%)]" />
+      {/* ======================================
+          DECORACIONES BOTÁNICAS
+      ====================================== */}
 
-      {/* LUCES DECORATIVAS */}
-      <div className="pointer-events-none absolute -left-32 -top-32 -z-10 h-[400px] w-[400px] rounded-full bg-white/70 blur-3xl" />
-
-      <div className="pointer-events-none absolute -bottom-40 -right-32 -z-10 h-[430px] w-[430px] rounded-full bg-[#B89B5E]/10 blur-3xl" />
-
-      {/* TEXTURA DE PAPEL */}
-      <div
-        className="pointer-events-none absolute inset-0 -z-10 opacity-[0.045] mix-blend-multiply"
-        style={{
-          backgroundImage:
-            "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.35'/%3E%3C/svg%3E\")",
-        }}
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -right-12
+          -top-20
+          z-0
+          w-[155px]
+          rotate-180
+          sm:w-[210px]
+          md:w-[260px]
+        "
       />
 
-      {/* DECORACIÓN BOTÁNICA */}
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-12 bottom-0 h-64 w-52 text-[#A99886]/20 sm:h-80 sm:w-64"
-        viewBox="0 0 250 320"
-        fill="none"
-      >
-        <path
-          d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -bottom-16
+          -left-12
+          z-0
+          w-[190px]
+          sm:w-[250px]
+          md:w-[310px]
+        "
+      />
 
-      <svg
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-12 top-0 h-64 w-52 rotate-180 text-[#A99886]/15 sm:h-80 sm:w-64"
-        viewBox="0 0 250 320"
-        fill="none"
-      >
-        <path
-          d="M28 310C73 242 96 177 113 97C121 59 137 30 164 8"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M96 176C67 159 43 167 25 194M107 133C81 112 58 116 39 140M117 92C98 70 81 65 60 74M86 216C114 208 135 219 149 244M108 146C135 144 153 157 165 180M128 67C149 69 164 81 174 101"
-          stroke="currentColor"
-          strokeWidth="1.2"
-        />
-      </svg>
+      {/* ======================================
+          CONTENIDO PRINCIPAL
+      ====================================== */}
 
       <div className="relative z-10 mx-auto max-w-5xl">
-        {/* ENCABEZADO */}
-        <motion.div
-          className="flex flex-col items-center text-center"
-          initial={{ opacity: 0, y: 25 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9 }}
-        >
-          <p className="text-[10px] uppercase tracking-[0.45em] text-[#9E8E7B]">
-            Con amor y gratitud
-          </p>
+        {/* ======================================
+            ENCABEZADO
+        ====================================== */}
 
-          <h2 className="mt-5 font-serif text-4xl font-normal text-[#433A34] sm:text-5xl md:text-6xl">
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="show"
+          viewport={{
+            once: true,
+            amount: 0.25,
+          }}
+          className="flex flex-col items-center text-center"
+        >
+          <FlorCentral />
+
+          <h2
+            className="
+              mt-5
+              font-serif
+              text-[clamp(1.9rem,6vw,3.5rem)]
+              font-normal
+              uppercase
+              leading-tight
+              tracking-[0.08em]
+              text-[#45413F]
+            "
+          >
             Nuestros Padres
           </h2>
 
-          {/* DIVISOR DORADO */}
-          <div className="mt-7 flex items-center gap-4">
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
-
-            <Heart
-              size={16}
-              strokeWidth={1.2}
-              className="text-[#B89B5E]"
-            />
-
-            <span className="h-px w-12 bg-[#C7A46A]/60 sm:w-20" />
+          <div className="mt-6">
+            <DivisorElegante />
           </div>
 
-          <p className="mx-auto mt-8 max-w-xl font-serif text-lg italic leading-relaxed text-[#6D5E52] sm:text-xl">
-            Con la bendición y el amor de quienes nos han
-            acompañado en cada paso de nuestras vidas.
+          <p
+            className="
+              mx-auto
+              mt-7
+              max-w-xl
+              font-serif
+              text-[17px]
+              leading-relaxed
+              text-[#766A5F]
+              sm:text-xl
+            "
+          >
+            Con la bendición y el amor de nuestros padres,
+            quienes nos han acompañado en cada paso
+            de nuestras vidas.
           </p>
         </motion.div>
 
-        {/* TARJETAS DE LOS PADRES */}
-        <div className="mt-16 grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-10">
+        {/* ======================================
+            PADRES DE LOS NOVIOS
+        ====================================== */}
+
+        <div
+          className="
+            relative
+            mx-auto
+            mt-14
+            grid
+            max-w-4xl
+            grid-cols-1
+            gap-12
+            sm:mt-16
+            md:grid-cols-2
+            md:gap-0
+          "
+        >
+          {/* DIVISOR VERTICAL EN COMPUTADORA */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-3
+              left-1/2
+              top-3
+              hidden
+              w-px
+              -translate-x-1/2
+              bg-[#B09D87]/60
+              md:block
+            "
+          />
+
           {padres.map((familia, index) => (
-            <motion.div
-              key={familia.titulo}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{
-                duration: 0.9,
-                delay: index * 0.18,
-                ease: [0.22, 1, 0.36, 1],
-              }}
-              className="relative border border-[#C7A46A]/35 bg-white/35 px-6 py-14 text-center shadow-[0_25px_70px_rgba(67,58,52,0.07)] backdrop-blur-sm sm:px-10 sm:py-16"
-            >
-              {/* MARCO INTERIOR */}
-              <div className="pointer-events-none absolute inset-3 border border-[#B89B5E]/15" />
+            <React.Fragment key={familia.titulo}>
+              <BloqueFamilia
+                grupo={familia}
+                index={index}
+              />
 
-              {/* ORNAMENTO SUPERIOR */}
-              <div className="relative mx-auto mb-8 flex h-12 w-12 items-center justify-center rounded-full border border-[#C7A46A]/40 bg-[#F8F5F0]">
-                <Heart
-                  size={19}
-                  strokeWidth={1.2}
-                  className="text-[#B89B5E]"
+              {index === 0 && (
+                <div
+                  className="
+                    mx-auto
+                    h-px
+                    w-32
+                    bg-[#B09D87]/40
+                    md:hidden
+                  "
                 />
-              </div>
-
-              {/* TÍTULO */}
-              <p className="relative text-[10px] uppercase tracking-[0.32em] text-[#9E8E7B]">
-                {familia.titulo}
-              </p>
-
-              {/* NOMBRES */}
-              <div className="relative mt-9 space-y-4">
-                <h3 className="font-serif text-2xl font-normal text-[#433A34] sm:text-3xl">
-                  {familia.nombres[0]}
-                </h3>
-
-                <div className="flex items-center justify-center gap-3">
-                  <span className="h-px w-8 bg-[#C7A46A]/40" />
-
-                  <span className="font-serif text-lg italic text-[#B89B5E]">
-                    y
-                  </span>
-
-                  <span className="h-px w-8 bg-[#C7A46A]/40" />
-                </div>
-
-                <h3 className="font-serif text-2xl font-normal text-[#433A34] sm:text-3xl">
-                  {familia.nombres[1]}
-                </h3>
-              </div>
-
-              {/* ORNAMENTO INFERIOR */}
-              <div className="relative mt-10 flex items-center justify-center gap-3">
-                <span className="h-px w-10 bg-[#C7A46A]/50" />
-                <span className="h-2 w-2 rotate-45 border border-[#B89B5E]" />
-                <span className="h-px w-10 bg-[#C7A46A]/50" />
-              </div>
-            </motion.div>
+              )}
+            </React.Fragment>
           ))}
         </div>
 
-        {/* FRASE FINAL */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
+        {/* ======================================
+            SEPARACIÓN ENTRE PADRES Y PADRINOS
+        ====================================== */}
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.9, delay: 0.3 }}
-          className="mx-auto mt-14 max-w-2xl text-center font-serif text-lg italic leading-relaxed text-[#6D5E52]"
+          transition={{ duration: 0.9 }}
+          className="
+            mx-auto
+            mt-20
+            flex
+            flex-col
+            items-center
+            text-center
+            sm:mt-24
+          "
         >
-          Gracias por enseñarnos que el amor es el comienzo
-          de todas las cosas bonitas.
-        </motion.p>
+          <FlorCentral />
+
+          <h2
+            className="
+              mt-5
+              font-serif
+              text-[clamp(1.9rem,6vw,3.5rem)]
+              font-normal
+              uppercase
+              leading-tight
+              tracking-[0.08em]
+              text-[#45413F]
+            "
+          >
+            Nuestros Padrinos
+          </h2>
+
+          <div className="mt-6">
+            <DivisorElegante />
+          </div>
+
+          <p
+            className="
+              mx-auto
+              mt-7
+              max-w-xl
+              font-serif
+              text-[17px]
+              leading-relaxed
+              text-[#766A5F]
+              sm:text-xl
+            "
+          >
+            Personas especiales que nos acompañarán
+            y serán testigos de nuestro amor.
+          </p>
+        </motion.div>
+
+        {/* ======================================
+            PADRINOS DE VELACIÓN Y ANILLOS
+        ====================================== */}
+
+        <div
+          className="
+            relative
+            mx-auto
+            mt-14
+            grid
+            max-w-4xl
+            grid-cols-1
+            gap-12
+            sm:mt-16
+            md:grid-cols-2
+            md:gap-0
+          "
+        >
+          {/* DIVISOR VERTICAL EN COMPUTADORA */}
+
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-3
+              left-1/2
+              top-3
+              hidden
+              w-px
+              -translate-x-1/2
+              bg-[#B09D87]/60
+              md:block
+            "
+          />
+
+          {padrinos.map((grupo, index) => (
+            <React.Fragment key={grupo.titulo}>
+              <BloqueFamilia
+                grupo={grupo}
+                index={index}
+              />
+
+              {index === 0 && (
+                <div
+                  className="
+                    mx-auto
+                    h-px
+                    w-32
+                    bg-[#B09D87]/40
+                    md:hidden
+                  "
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+
+        {/* ======================================
+            FRASE FINAL
+        ====================================== */}
+
+        <motion.div
+          initial={{
+            opacity: 0,
+            y: 20,
+          }}
+          whileInView={{
+            opacity: 1,
+            y: 0,
+          }}
+          viewport={{
+            once: true,
+            amount: 0.3,
+          }}
+          transition={{
+            duration: 0.9,
+          }}
+          className="
+            mx-auto
+            mt-20
+            max-w-2xl
+            text-center
+            sm:mt-24
+          "
+        >
+          <DivisorElegante />
+
+          <p
+            className="
+              mt-7
+              font-serif
+              text-base
+              italic
+              leading-relaxed
+              text-[#766A5F]
+              sm:text-lg
+            "
+          >
+            Gracias por ser parte de nuestra historia
+            y acompañarnos en este día tan especial.
+          </p>
+
+          <Heart
+            size={14}
+            fill="#B09D87"
+            strokeWidth={1}
+            className="
+              mx-auto
+              mt-6
+              text-[#B09D87]
+            "
+          />
+        </motion.div>
       </div>
-    </motion.section>
+    </section>
   );
 }

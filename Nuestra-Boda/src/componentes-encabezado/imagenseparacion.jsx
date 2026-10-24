@@ -4,26 +4,26 @@ import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
 
 // ==========================================
-// CONFIGURACIÓN DE LA IMAGEN
+// INFORMACIÓN EDITABLE - WEDLY PLUS
 // ==========================================
 
-const imagenConfig = {
-  src: "/finalboda.webp",
+const CONFIG = {
+  frase:
+    "Con la bendición de Dios y rodeados de su amor, esperamos compartir con ustedes la alegría de nuestro eterno comienzo.",
 
-  // Posición horizontal y vertical
-  // 50% 50% = centro
-  // 50% 20% = parte superior
-  // 50% 80% = parte inferior
+  iniciales: "O & S",
 
-  mobile: "50% 35%",
-  tablet: "50% 45%",
-  desktop: "50% 20%",
+  fecha: "02 · 01 · 2027",
 };
+
+// ==========================================
+// ANIMACIONES
+// ==========================================
 
 const fadeUp = {
   hidden: {
     opacity: 0,
-    y: 35,
+    y: 25,
   },
   show: {
     opacity: 1,
@@ -35,180 +35,298 @@ const fadeUp = {
   },
 };
 
+// ==========================================
+// RAMAS BOTÁNICAS
+// ==========================================
+
+function RamaBotanica({ className = "" }) {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 260 340"
+      fill="none"
+      className={className}
+    >
+      <path
+        d="
+          M18 335
+          C68 290 91 236 112 175
+          C135 111 155 56 211 10
+        "
+        stroke="currentColor"
+        strokeWidth="1.3"
+        strokeLinecap="round"
+      />
+
+      <path
+        d="
+          M91 232 C58 208 38 213 13 231
+          M109 183 C76 159 57 162 32 181
+          M134 126 C103 101 88 100 66 113
+          M159 76 C184 58 207 63 230 81
+          M102 207 C144 199 163 221 179 247
+          M126 152 C163 141 184 154 197 178
+        "
+        stroke="currentColor"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+      />
+
+      <g
+        fill="currentColor"
+        fillOpacity="0.12"
+        stroke="currentColor"
+        strokeWidth="0.8"
+      >
+        <path d="M13 231 Q22 207 51 210 Q42 231 13 231Z" />
+        <path d="M32 181 Q44 155 75 162 Q62 184 32 181Z" />
+        <path d="M66 113 Q80 89 108 100 Q96 119 66 113Z" />
+        <path d="M230 81 Q215 52 185 62 Q198 85 230 81Z" />
+        <path d="M179 247 Q150 239 151 213 Q175 218 179 247Z" />
+        <path d="M197 178 Q169 169 170 145 Q192 152 197 178Z" />
+      </g>
+    </svg>
+  );
+}
+
+// ==========================================
+// DIVISOR ELEGANTE
+// ==========================================
+
+function DivisorElegante() {
+  return (
+    <div className="flex items-center justify-center gap-4">
+      <span className="h-px w-12 bg-[#E5CCB0]/70 sm:w-20" />
+
+      <span
+        className="
+          h-2
+          w-2
+          rotate-45
+          border
+          border-[#E5CCB0]
+        "
+      />
+
+      <span className="h-px w-12 bg-[#E5CCB0]/70 sm:w-20" />
+    </div>
+  );
+}
+
+// ==========================================
+// COMPONENTE PRINCIPAL
+// ==========================================
+
 export default function ImagenSeparacion() {
   return (
-    <motion.section
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="show"
-      viewport={{ once: true, amount: 0.25 }}
-      className="relative isolate w-full overflow-hidden bg-[#F8F5F0]"
+    <section
+      id="frase-final"
+      className="
+        relative
+        isolate
+        flex
+        min-h-[540px]
+        w-full
+        items-center
+        justify-center
+        overflow-hidden
+        bg-[#8F7D68]
+        px-5
+        py-24
+        sm:min-h-[620px]
+        sm:px-8
+        md:min-h-[700px]
+        md:py-32
+      "
     >
-      {/* CONTENEDOR DE LA FOTOGRAFÍA */}
-      <div className="relative min-h-[620px] w-full overflow-hidden sm:min-h-[720px] md:min-h-[820px]">
+      {/* ======================================
+          DECORACIONES BOTÁNICAS
+      ====================================== */}
 
-        {/* IMAGEN CON POSICIÓN PERSONALIZABLE */}
-        <motion.img
-          src={imagenConfig.src}
-          alt="María y Jonathan celebrando su boda"
-          className="imagen-separacion absolute inset-0 h-full w-full object-cover"
-          initial={{ scale: 1.08 }}
-          whileInView={{ scale: 1 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 1.8,
-            ease: [0.22, 1, 0.36, 1],
-          }}
-        />
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -bottom-20
+          -left-16
+          w-[180px]
+          text-[#E5CCB0]/30
+          sm:w-[250px]
+          md:w-[310px]
+        "
+      />
 
-        <style>
-          {`
-            .imagen-separacion {
-              object-position: ${imagenConfig.mobile};
-            }
+      <RamaBotanica
+        className="
+          pointer-events-none
+          absolute
+          -right-16
+          -top-20
+          w-[180px]
+          rotate-180
+          text-[#E5CCB0]/30
+          sm:w-[250px]
+          md:w-[310px]
+        "
+      />
 
-            @media (min-width: 640px) {
-              .imagen-separacion {
-                object-position: ${imagenConfig.tablet};
-              }
-            }
+      {/* ======================================
+          MARCOS DECORATIVOS
+      ====================================== */}
 
-            @media (min-width: 1024px) {
-              .imagen-separacion {
-                object-position: ${imagenConfig.desktop};
-              }
-            }
-          `}
-        </style>
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-4
+          border
+          border-[#E5CCB0]/35
+          sm:inset-7
+          md:inset-10
+        "
+      />
 
-        {/* VELOS EDITORIALES */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#433A34]/65 via-[#433A34]/10 to-[#433A34]/15" />
+      <div
+        className="
+          pointer-events-none
+          absolute
+          inset-6
+          border
+          border-[#E5CCB0]/15
+          sm:inset-10
+          md:inset-12
+        "
+      />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#433A34]/15 via-transparent to-[#433A34]/10" />
+      {/* ======================================
+          CONTENIDO CENTRAL
+      ====================================== */}
 
-        {/* MARCO */}
-        <div className="pointer-events-none absolute inset-5 z-10 border border-white/35 sm:inset-8 md:inset-10" />
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="show"
+        viewport={{
+          once: true,
+          amount: 0.25,
+        }}
+        className="
+          relative
+          z-10
+          mx-auto
+          flex
+          w-full
+          max-w-4xl
+          flex-col
+          items-center
+          text-center
+        "
+      >
 
-        <div className="pointer-events-none absolute inset-7 z-10 border border-[#E7D7B1]/30 sm:inset-10 md:inset-12" />
+   
 
-        {/* PAPEL SUPERIOR */}
-        <div className="pointer-events-none absolute left-0 top-0 z-20 w-full overflow-hidden leading-none">
-          <svg
-            className="block h-[75px] w-full sm:h-[105px]"
-            viewBox="0 0 1440 140"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="
-                M0,0
-                L1440,0
-                L1440,48
-                C1260,95 1110,30 930,65
-                C750,105 590,35 410,72
-                C245,108 120,45 0,82
-                Z
-              "
-              fill="#F8F5F0"
-            />
-          </svg>
+
+        {/* DIVISOR */}
+
+        <div className="mt-7">
+          <DivisorElegante />
         </div>
 
-        {/* CONTENIDO CENTRAL */}
-        <motion.div
-          className="absolute inset-0 z-10 flex flex-col items-center justify-end px-6 pb-28 text-center text-white sm:pb-36 md:pb-40"
-          initial={{ opacity: 0, y: 35 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{
-            duration: 1,
-            delay: 0.25,
-            ease: [0.22, 1, 0.36, 1],
-          }}
+        {/* ======================================
+            FRASE PRINCIPAL
+        ====================================== */}
+
+        <blockquote
+          className="
+            mx-auto
+            mt-10
+            max-w-3xl
+            px-2
+            font-serif
+            text-[clamp(1.65rem,4.5vw,3.25rem)]
+            font-normal
+            italic
+            leading-[1.55]
+            tracking-[-0.015em]
+            text-[#FCFAEF]
+            sm:px-6
+            md:leading-[1.5]
+          "
         >
-          <div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/45 bg-white/10 backdrop-blur-md">
-            <Heart size={20} strokeWidth={1.3} />
-          </div>
-
-          <p className="mt-7 text-[9px] uppercase tracking-[0.5em] text-white/80 sm:text-[10px]">
-            Nuestro gran día
-          </p>
-
-          <h2 className="mt-4 font-serif text-4xl font-normal sm:text-5xl md:text-6xl lg:text-7xl">
-            ¡Te esperamos!
-          </h2>
-
-          <div className="mt-7 flex items-center gap-4">
-            <span className="h-px w-12 bg-white/55 sm:w-20" />
-
-            <span className="h-2 w-2 rotate-45 border border-[#E7D7B1]" />
-
-            <span className="h-px w-12 bg-white/55 sm:w-20" />
-          </div>
-
-          <p className="mt-7 max-w-xl font-serif text-lg italic leading-relaxed text-white/90 sm:text-xl md:text-2xl">
-            Será un honor compartir contigo uno de los momentos más importantes
-            de nuestra historia.
-          </p>
-
-          <p className="mt-8 text-[9px] uppercase tracking-[0.4em] text-[#E7D7B1] sm:text-[10px]">
-            María & Jonathan
-          </p>
-        </motion.div>
-
-        {/* PAPEL INFERIOR */}
-        <div className="pointer-events-none absolute bottom-0 left-0 z-20 w-full overflow-hidden leading-none">
-          <svg
-            className="block h-[95px] w-full sm:h-[135px]"
-            viewBox="0 0 1440 160"
-            preserveAspectRatio="none"
-            xmlns="http://www.w3.org/2000/svg"
+          <span
+            className="
+              mr-1
+              text-[#E5CCB0]
+            "
           >
-            {/* SOMBRA DEL PAPEL */}
-            <path
-              d="
-                M0,86
-                C165,34 305,125 475,75
-                C650,23 800,127 970,70
-                C1135,15 1280,114 1440,58
-                L1440,160
-                L0,160
-                Z
-              "
-              fill="rgba(67,58,52,0.16)"
-              transform="translate(0,-5)"
-            />
+            “
+          </span>
 
-            {/* PAPEL */}
-            <path
-              d="
-                M0,86
-                C165,34 305,125 475,75
-                C650,23 800,127 970,70
-                C1135,15 1280,114 1440,58
-                L1440,160
-                L0,160
-                Z
-              "
-              fill="#F8F5F0"
-            />
+          {CONFIG.frase}
 
-            {/* BORDE CHAMPAGNE */}
-            <path
-              d="
-                M0,86
-                C165,34 305,125 475,75
-                C650,23 800,127 970,70
-                C1135,15 1280,114 1440,58
-              "
-              fill="none"
-              stroke="#C7A46A"
-              strokeOpacity="0.42"
-              strokeWidth="1.5"
-            />
-          </svg>
+          <span
+            className="
+              ml-1
+              text-[#E5CCB0]
+            "
+          >
+            ”
+          </span>
+        </blockquote>
+
+        {/* CORAZÓN Y ANILLO */}
+
+        <div
+          className="
+            mt-8
+            flex
+            items-center
+            justify-center
+            gap-3
+            text-2xl
+            sm:text-3xl
+          "
+          aria-hidden="true"
+        >
+          <span>🤍</span>
+          <span>💍</span>
         </div>
-      </div>
-    </motion.section>
+
+        {/* DIVISOR INFERIOR */}
+
+        <div className="mt-9">
+          <DivisorElegante />
+        </div>
+
+        {/* INICIALES */}
+
+        <p
+          className="
+            mt-9
+            font-serif
+            text-3xl
+            italic
+            text-[#FCFAEF]
+            sm:text-4xl
+          "
+        >
+          {CONFIG.iniciales}
+        </p>
+
+        {/* FECHA */}
+
+        <p
+          className="
+            mt-4
+            text-[10px]
+            tracking-[0.35em]
+            text-[#E5CCB0]
+            sm:text-xs
+          "
+        >
+          {CONFIG.fecha}
+        </p>
+      </motion.div>
+    </section>
   );
 }
