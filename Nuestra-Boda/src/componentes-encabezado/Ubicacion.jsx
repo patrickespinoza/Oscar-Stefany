@@ -40,7 +40,7 @@ const CONFIG = {
       hora: "3:00",
       periodo: "P. M.",
       ubicacion:
-        "https://maps.app.goo.gl/BiE8EDCxETKVn9UB6",
+        "https://maps.app.goo.gl/Cv748sTFt9HxQdWB8",
       tipo: "recepcion",
     },
   ],
